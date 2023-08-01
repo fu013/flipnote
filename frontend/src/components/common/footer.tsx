@@ -9,7 +9,9 @@ const Footer = () => {
     text-align: center;
     color: #aaa;
   `;
-  return <FooterBox>Copyright ⓒ 2023 Dogrimong. All Right Reserved.</FooterBox>;
+  return (
+    <FooterBox>Copyright ⓒ 2023 MapleFlipnote. All Right Reserved.</FooterBox>
+  );
 };
 
 export default Footer;

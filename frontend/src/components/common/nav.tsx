@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { pageGroup } from "config/pageSetting.config";
 import styled from "@emotion/styled";
+import { getImgURL } from "lib/getImgURL";
 
 interface Props {
   window?: () => Window;
@@ -50,8 +51,8 @@ export default function Nav(props: Props) {
   const Logo = () => {
     return (
       <LogoContainer>
-        <LogoImage src={require("static/images/favicon.png")} />
-        <LogoText>MapleNote</LogoText>
+        <LogoImage src={getImgURL("favicon.png")} />
+        <LogoText>MapleFilpnote</LogoText>
       </LogoContainer>
     );
   };
