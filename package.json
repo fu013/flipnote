@@ -1,0 +1,25 @@
+{
+  "name": "deploy",
+  "version": "0.1.1",
+  "private": true,
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "scripts": {
+    "server": "cd backend && npm run start:dev",
+    "client": "cd frontend && npm start",
+    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
