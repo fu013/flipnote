@@ -11,6 +11,18 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { getImgURL } from "lib/getImgURL";
+import styled from "@emotion/styled";
+
+/* 할일 목록 리스트 체크 미완료 => 완료 기능 */
+/**
+ * 공통적으로 쓰이는 인자
+ * a: 선택된 데이터 리스트
+ * b: 옮길 방향에 존재하는 데이터 리스트
+ */
+
+const CustomListItem = styled(ListItem)(() => ({
+  color: "black",
+}));
 
 // 리스트 아이템 타입 인터페이스 정의
 interface ListItemInfo {
@@ -19,12 +31,6 @@ interface ListItemInfo {
   name: string;
 }
 
-/**
- * 할일 목록 리스트 체크 미완료 => 완료 기능
- * Params description
- * a: 선택된 데이터 리스트
- * b: 옮길 방향에 존재하는 데이터 리스트
- */
 const not = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return a.filter(
     (value) => b.findIndex((item) => item.id === value.id) === -1
@@ -45,6 +51,7 @@ const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
 export const TodoList = () => {
   const [checked, setChecked] = useState<readonly ListItemInfo[]>([]);
   const [left, setLeft] = useState<readonly ListItemInfo[]>([
+    // 오늘의 할일 리스트
     { id: 0, image: "image088.png", name: "소멸의 여로 심볼" },
     { id: 1, image: "image090.png", name: "츄츄 심볼" },
     { id: 2, image: "image092.png", name: "레헬른 심볼" },
@@ -140,12 +147,11 @@ export const TodoList = () => {
           const labelId = `transfer-list-all-item-${item.id}-label`;
 
           return (
-            <ListItem
+            <CustomListItem
               key={item.id}
               role="listitem"
               onClick={handleToggle(item.id)}
             >
-              냐옹 : {item.id}
               <ListItemIcon>
                 <Checkbox
                   checked={checked.findIndex((c) => c.id === item.id) !== -1}
@@ -158,7 +164,7 @@ export const TodoList = () => {
               </ListItemIcon>
               <img src={getImgURL(item.image)} alt={`Image ${item.id}`} />
               <ListItemText id={labelId} primary={item.name} />
-            </ListItem>
+            </CustomListItem>
           );
         })}
       </List>

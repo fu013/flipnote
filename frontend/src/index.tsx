@@ -6,7 +6,9 @@ import Loading from "loading";
 import reportWebVitals from "reportWebVitals";
 import Router from "router";
 import "static/css/common.css";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
+// react-query 및 쿼리 로딩 suspense 설정
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,13 +17,35 @@ const queryClient = new QueryClient({
   },
 });
 
+declare module "@mui/material/styles" {
+  interface Theme {
+    palette: {
+      mode?: "light" | "dark";
+      primary: {
+        main: string;
+      };
+    };
+  }
+}
+
+const theme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#1976d2",
+    },
+  },
+});
+
 ReactDOM.render(
   <Suspense fallback={<Loading />}>
-    <RecoilRoot>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-      </QueryClientProvider>
-    </RecoilRoot>
+    <ThemeProvider theme={theme}>
+      <RecoilRoot>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+        </QueryClientProvider>
+      </RecoilRoot>
+    </ThemeProvider>
   </Suspense>,
   document.querySelector("#root")
 );

@@ -1,3 +1,4 @@
+// 공통으로 쓸 styledComponents
 import styled from "@emotion/styled";
 export const CmContainer = styled.div`
   width 100%;

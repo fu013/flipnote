@@ -1,6 +1,8 @@
+// 페이지명과 URL정보를 담고 있는 객체 배열, 객체 추가시 서브 페이지도 추가 가능
 export const pageGroup: { [key: string]: any } = {
-  Home: [{ 홈: `/` }],
-  Todo: [{ 회원: `member` }],
-  Guild: [{ 상품: `productList` }, { 상품등록: `product` }],
-  Login: [{ 로그인: `/auth/login` }],
+  Home: [{ Home: `/` }],
+  Todo: [{ Todo: `member` }],
+  Guild: [{ Guild: `productList` }],
+  Patch: [{ Guild: `patch` }],
+  Login: [{ Login: `/auth/login` }],
 };
