@@ -1,0 +1,135 @@
+## 개발 계획
+
+#### 환경설정
+- DB: 비용적인 측면에서 가장 크게 고려해야할 사항, AWS Dynamo DB랑 MongoDB중에 고민중, 아마 인스턴스에 직접 DB를 설치해서 쓸지, 따로 DB를 나눠서 쓸지에 대해서 정해지면 결정할 듯
+- 나눠서 쓰면 너무 비용이 커질거 같아서 계산해보고 결정해야겠음.
+
+- DB 보다는 JSON 형태의 문서를 계속 읽어서 업데이트하는 방식이 좀 더 합리적 이겠음, 사용자가 불편함을 느낄 수는 있으나, 서버관리측면에서 내가 정보를 가지고있는것이 너무 비용이 크고 사용자 입장에서도
+좀 그렇다. 그래서 JSON 문서를 가지고 있되, 해당 문서를 엑셀로 파싱해줄 수 있는 기능을 추가한다면 좋을것같다.
+
+JSON 예시)
+{
+  "global": {
+    "daily_presets": [
+      {"id": 1, "title": "일일 퀘스트 프리셋 1", "description": "설정1"},
+      {"id": 2, "title": "일일 퀘스트 프리셋 2", "description": "설정2"}
+    ],
+    "weekly_presets": [
+      {"id": 1, "title": "주간 퀘스트 프리셋 1", "description": "설정1"},
+      {"id": 2, "title": "주간 퀘스트 프리셋 2", "description": "설정2"}
+    ],
+    "monthly_presets": [
+      {"id": 1, "title": "월간 퀘스트 프리셋 1", "description": "설정1"},
+      {"id": 2, "title": "월간 퀘스트 프리셋 2", "description": "설정2"}
+    ]
+  },
+  "characters": [
+    {
+      "id": 1,
+      "name": "캐릭터1",
+      "level": 10,
+      "quests": {
+        "daily": {
+          "2023-08-02": [
+            {"id": 1, "title": "일일 퀘스트1", "completed": true},
+            {"id": 2, "title": "일일 퀘스트2", "completed": false}
+          ],
+          "2023-08-01": [
+            {"id": 3, "title": "일일 퀘스트3", "completed": true}
+          ]
+        },
+        "weekly": {
+          "2023-08-02": [
+            {"id": 1, "title": "주간 퀘스트1", "completed": true}
+          ],
+          "2023-07-31": [
+            {"id": 2, "title": "주간 퀘스트2", "completed": false}
+          ]
+        },
+        "monthly": {
+          "2023-08-01": [
+            {"id": 1, "title": "월간 퀘스트1", "completed": true}
+          ],
+          "2023-07-01": [
+            {"id": 2, "title": "월간 퀘스트2", "completed": false}
+          ]
+        }
+      }
+    },
+    // 다른 캐릭터들...
+  ]
+}
+
+사용 예시)
+import React, { useEffect, useState } from 'react';
+
+interface Character {
+  id: number;
+  name: string;
+  level: number;
+  quests: {
+    daily: { [date: string]: Quest[] };
+    weekly: { [date: string]: Quest[] };
+    monthly: { [date: string]: Quest[] };
+  };
+}
+
+interface Quest {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const CharacterList: React.FC = () => {
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  useEffect(() => {
+    fetch('/data.json')
+      .then((response) => response.json())
+      .then((data) => {
+        setCharacters(data.characters);
+      })
+      .catch((error) => console.error('Error fetching JSON data:', error));
+  }, []);
+
+  return (
+    <div>
+      {characters.map((character) => (
+        <div key={character.id}>
+          <h3>{character.name}</h3>
+          <p>Level: {character.level}</p>
+          <h4>Daily Quests</h4>
+          <ul>
+            {Object.entries(character.quests.daily).map(([date, quests]) => (
+              <li key={date}>
+                {date}:
+                <ul>
+                  {quests.map((quest) => (
+                    <li key={quest.id}>
+                      {quest.title} - {quest.completed ? 'Completed' : 'Incomplete'}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+          {/* Add code for Weekly and Monthly Quests as well */}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default CharacterList;
+
+
+
+완료 ✅ | 진행중 ❎
+
+-----
+
+1. 투두리스트 제작 ✅
+
+2. 투두리스트에서 체크한 내용을 완료 전 => 완료 후 리스트로 이동 할 수 있는 기능 제작 ✅
+
+3. 캐릭터별로 투두리스트 불러오는 기능 제작 => 디자인 ✅ / 기능 ❎

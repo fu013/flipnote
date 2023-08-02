@@ -15,9 +15,9 @@ import styled from "@emotion/styled";
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
- * 공통적으로 쓰이는 인자
- * a: 선택된 데이터 리스트
- * b: 옮길 방향에 존재하는 데이터 리스트
+ * 공통 인자
+ * @param {readonly ListItemInfo[]} a: 선택된 데이터 리스트
+ * @param {readonly ListItemInfo[]} b: 옮길 방향에 존재하는 데이터 리스트
  */
 
 const CustomListItem = styled(ListItem)(() => ({
@@ -58,6 +58,8 @@ export const TodoList = () => {
     { id: 3, image: "image094.png", name: "아르카나 심볼" },
     { id: 4, image: "image050.png", name: "모라스 심볼" },
     { id: 5, image: "image052.png", name: "에스페라 심볼" },
+    { id: 6, image: "image060.png", name: "하드 힐라" },
+    { id: 7, image: "image062.png", name: "카오스 핑크빈" },
   ]);
   const [right, setRight] = useState<readonly ListItemInfo[]>([]);
 
@@ -67,7 +69,6 @@ export const TodoList = () => {
 
   // Input 체크박스 토글
   const handleToggle = (value: number) => () => {
-    console.log(JSON.stringify(checked));
     const currentIndex = checked.findIndex((item) => item.id === value);
     const newChecked = [...checked];
     const itemToAdd =
@@ -111,7 +112,14 @@ export const TodoList = () => {
   const customList = (title: ReactNode, items: readonly ListItemInfo[]) => (
     <Card>
       <CardHeader
-        sx={{ px: 2, py: 1 }}
+        sx={{
+          px: 2,
+          py: 1,
+          "& *": {
+            fontSize: "1.35rem !important",
+            fontWeight: "bold !important",
+          },
+        }}
         avatar={
           <Checkbox
             onClick={handleToggleAll(items)}
@@ -138,6 +146,10 @@ export const TodoList = () => {
           height: 600,
           bgcolor: "background.paper",
           overflow: "auto",
+          "& *": {
+            fontSize: "1.5rem !important",
+            fontWeight: "bold !important",
+          },
         }}
         dense
         component="div"
@@ -152,7 +164,7 @@ export const TodoList = () => {
               role="listitem"
               onClick={handleToggle(item.id)}
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "auto !important" }}>
                 <Checkbox
                   checked={checked.findIndex((c) => c.id === item.id) !== -1}
                   tabIndex={-1}
@@ -172,34 +184,51 @@ export const TodoList = () => {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList("오늘의 할일", left)}</Grid>
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
-            aria-label="move selected right"
-          >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
-            aria-label="move selected left"
-          >
-            &lt;
-          </Button>
+    <div>
+      <h5></h5>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        sx={{ "& *": { fontFamily: "Noto Sans, sans-serif !important" } }}
+      >
+        <Grid item>{customList("오늘의 할일", left)}</Grid>
+        <Grid item>
+          <Grid container direction="column" alignItems="center">
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleCheckedRight}
+              disabled={leftChecked.length === 0}
+              aria-label="move selected right"
+            >
+              &gt;
+            </Button>
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleCheckedLeft}
+              disabled={rightChecked.length === 0}
+              aria-label="move selected left"
+            >
+              &lt;
+            </Button>
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              disabled={rightChecked.length === 0}
+              aria-label="result save"
+            >
+              저장
+            </Button>
+          </Grid>
         </Grid>
+        <Grid item>{customList("완료된 일들", right)}</Grid>
       </Grid>
-      <Grid item>{customList("완료된 일들", right)}</Grid>
-    </Grid>
+    </div>
   );
 };
 
