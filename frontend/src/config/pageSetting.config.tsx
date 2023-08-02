@@ -4,5 +4,4 @@ export const pageGroup: { [key: string]: any } = {
   Todo: [{ Todo: `member` }],
   Guild: [{ Guild: `productList` }],
   Patch: [{ Guild: `patch` }],
-  Login: [{ Login: `/auth/login` }],
 };

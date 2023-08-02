@@ -14,10 +14,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { pageGroup } from "config/pageSetting.config";
 import styled from "@emotion/styled";
 import { getImgURL } from "lib/getImgURL";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { accessTokenAtom, userInfoAtom } from "services/recoil/auth";
+import { getCookie } from "services/utils/cookie";
+import { useAuth_a } from "services/axios/auth.axios";
+import Login from "page/auth/login";
 
 interface Props {
   window?: () => Window;
@@ -47,6 +53,15 @@ export default function Nav(props: Props) {
   const handlePageMove = (url: string) => {
     navigate(url);
   };
+  const [logIn, setLogIn] = useState(false);
+  const user = useRecoilValue(userInfoAtom);
+  const token = useRecoilValue(accessTokenAtom);
+  const useAuthA = useAuth_a();
+  useEffect(() => {
+    if (getCookie("isAccess") >= 1 && user && token) setLogIn(true);
+    else setLogIn(false);
+  }, []);
+  console.log("로그인 상태: " + logIn);
 
   const Logo = () => {
     return (
@@ -121,6 +136,17 @@ export default function Nav(props: Props) {
                 {arrStr[0]}
               </Button>
             ))}
+            <Button
+              style={{ display: logIn ? "inline-flex" : "none", fontSize: "1.5rem !important", color: "#fff" }}
+              onClick={() =>
+                useAuthA.logout(user.mb_id, () => alert("로그아웃 완료"))
+              }
+            >
+              로그아웃
+            </Button>
+            <Button style={{ display: logIn ? "none" : "block", fontSize: "1.5rem !important", color: "#fff" }}>
+              <Link to="/auth/login" style={{ display: "inline !important" }}>로그인</Link>
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>

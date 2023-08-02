@@ -1,4 +1,6 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
+const { persistAtom } = recoilPersist();
 
 export interface ListItemInfo {
   id: number;
@@ -19,16 +21,19 @@ export const leftState = atom<readonly ListItemInfo[]>({
     { id: 6, image: "image060.png", name: "하드 힐라" },
     { id: 7, image: "image062.png", name: "카오스 핑크빈" },
   ],
+  effects_UNSTABLE: [persistAtom],
 });
 
 // 완료된 일들 리스트 상태
 export const rightState = atom<readonly ListItemInfo[]>({
   key: "rightState",
   default: [],
+  effects_UNSTABLE: [persistAtom],
 });
 
 // 선택된 데이터 리스트 상태
 export const checkedState = atom<readonly ListItemInfo[]>({
   key: "checkedState",
   default: [],
+  effects_UNSTABLE: [persistAtom],
 });
