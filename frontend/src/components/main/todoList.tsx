@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -12,6 +12,13 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { getImgURL } from "lib/getImgURL";
 import styled from "@emotion/styled";
+import { useRecoilState } from "recoil";
+import {
+  ListItemInfo,
+  leftState,
+  rightState,
+  checkedState,
+} from "services/recoil/atom";
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -23,13 +30,6 @@ import styled from "@emotion/styled";
 const CustomListItem = styled(ListItem)(() => ({
   color: "black",
 }));
-
-// 리스트 아이템 타입 인터페이스 정의
-interface ListItemInfo {
-  id: number;
-  image: string;
-  name: string;
-}
 
 const not = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return a.filter(
@@ -49,19 +49,9 @@ const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return [...a, ...not(b, a)];
 };
 export const TodoList = () => {
-  const [checked, setChecked] = useState<readonly ListItemInfo[]>([]);
-  const [left, setLeft] = useState<readonly ListItemInfo[]>([
-    // 오늘의 할일 리스트
-    { id: 0, image: "image088.png", name: "소멸의 여로 심볼" },
-    { id: 1, image: "image090.png", name: "츄츄 심볼" },
-    { id: 2, image: "image092.png", name: "레헬른 심볼" },
-    { id: 3, image: "image094.png", name: "아르카나 심볼" },
-    { id: 4, image: "image050.png", name: "모라스 심볼" },
-    { id: 5, image: "image052.png", name: "에스페라 심볼" },
-    { id: 6, image: "image060.png", name: "하드 힐라" },
-    { id: 7, image: "image062.png", name: "카오스 핑크빈" },
-  ]);
-  const [right, setRight] = useState<readonly ListItemInfo[]>([]);
+  const [left, setLeft] = useRecoilState(leftState);
+  const [right, setRight] = useRecoilState(rightState);
+  const [checked, setChecked] = useRecoilState(checkedState);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
