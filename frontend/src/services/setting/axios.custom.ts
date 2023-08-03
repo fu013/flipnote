@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 import { useRecoilValue } from "recoil";
 import { SERVER_URL } from "config/constants.config";
 import { accessTokenAtom } from "services/recoil/auth";
+import customToast from "lib/customToast";
 
 // JWT 토큰 인증 Axios 요청폼, 인터셉터 극한의 커스터마이징
 export const useAxiosCustom = (auth: boolean): AxiosInstance => {
@@ -13,7 +14,7 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
   });
 
   axiosInstance.interceptors.request.use(
-    (config) => {
+    (config: any) => {
       config.headers = config.headers ?? {};
       config.data instanceof FormData
         ? (config.headers["Content-Type"] = "multipart/form-data")
@@ -21,13 +22,13 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
       if (auth) {
         accessToken
           ? ((
-            config.headers as AxiosRequestHeaders
-          ).Authorization = `Bearer ${accessToken}`)
-          : alert("로그인 토큰이 존재하지 않습니다.");
+              config.headers as AxiosRequestHeaders
+            ).Authorization = `Bearer ${accessToken}`)
+          : customToast("로그인 토큰이 존재하지 않습니다.", "warning");
       }
       return config;
     },
-    (error) => {
+    (error: any) => {
       const statusCode = error.response?.status;
       if (statusCode === 401) {
         error.response.statusText = "Unauthorized";

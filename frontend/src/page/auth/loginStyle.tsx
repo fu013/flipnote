@@ -58,10 +58,3 @@ export const GuideRegister = styled.div`
 export const MoveRegister = styled.span`
   color: #ff9b85;
 `;
-
-export const LoginKakaoBtn = styled.a`
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  margin-top: 0.5rem;
-`;

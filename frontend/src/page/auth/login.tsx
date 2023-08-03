@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as config from "config/constants.config";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -16,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useAuth_h } from "services/hooks/auth.hook";
-import { toast } from "react-toastify";
+import customToast from "lib/customToast";
 
 const Login = () => {
   const user = useRecoilValue(userInfoAtom);
@@ -24,9 +23,6 @@ const Login = () => {
   const navigate = useNavigate();
   const useAuthH = useAuth_h();
   const loginMutation = useAuthH.useLogin();
-  const showWarningToast = (message: string) => {
-    toast.warning(message, { position: "top-center" });
-  };
   useEffect(() => {
     if (getCookie("isAccess") >= 1 && user && token) {
       navigate("/");
@@ -39,12 +35,13 @@ const Login = () => {
       mb_pw: e.target.mb_pw.value,
     };
     if (!e.target.mb_id.value) {
-      showWarningToast("아이디를 입력해주세요.");
+      customToast("아이디를 입력해주세요.", "warning");
       e.target.mb_id.focus();
     } else if (!e.target.mb_pw.value) {
-      showWarningToast("비밀번호를 입력해주세요.");
+      customToast("비밀번호를 입력해주세요.", "warning");
       e.target.mb_pw.focus();
     } else {
+      customToast("환영합니다.", "success");
       loginMutation.mutate(sendParams);
     }
   };
