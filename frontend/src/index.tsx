@@ -7,6 +7,8 @@ import reportWebVitals from "reportWebVitals";
 import Router from "router";
 import "static/css/common.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // react-query 및 쿼리 로딩 suspense 설정
 const queryClient = new QueryClient({
@@ -42,6 +44,7 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
+          <ToastContainer position="top-center" autoClose={1000} limit={1} />
           <Router />
         </QueryClientProvider>
       </RecoilRoot>

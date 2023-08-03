@@ -1,12 +1,7 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
+import { ListItemInfo } from "services/interfaces/todo.interface";
 const { persistAtom } = recoilPersist();
-
-export interface ListItemInfo {
-  id: number;
-  image: string;
-  name: string;
-}
 
 // 오늘의 할일 리스트 상태
 export const leftState = atom<readonly ListItemInfo[]>({

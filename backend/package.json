@@ -41,6 +41,7 @@
     "mapped-types": "^0.0.1",
     "mysql2": "^3.5.2",
     "nest-winston": "^1.9.3",
+    "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",

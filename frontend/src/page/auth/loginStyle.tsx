@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import background from "resources/images/background-dog.jpg";
+import background from "static/images/background_1.png";
 
 export const LoginContainer = styled.div`
   width: 100vw;
@@ -12,6 +12,7 @@ export const LoginContainer = styled.div`
     height: 100%;
     top: 0;
     left: 0;
+    background: url(${background});
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

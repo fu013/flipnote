@@ -10,14 +10,13 @@ import {
   GuideRegister,
   LoginBtn,
   LoginContainer,
-  LoginKakaoBtn,
   LoginWrapper,
-  MoveRegister,
 } from "./loginStyle";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useAuth_h } from "services/hooks/auth.hook";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const user = useRecoilValue(userInfoAtom);
@@ -25,6 +24,9 @@ const Login = () => {
   const navigate = useNavigate();
   const useAuthH = useAuth_h();
   const loginMutation = useAuthH.useLogin();
+  const showWarningToast = (message: string) => {
+    toast.warning(message, { position: "top-center" });
+  };
   useEffect(() => {
     if (getCookie("isAccess") >= 1 && user && token) {
       navigate("/");
@@ -37,10 +39,10 @@ const Login = () => {
       mb_pw: e.target.mb_pw.value,
     };
     if (!e.target.mb_id.value) {
-      alert("아이디를 입력해주세요.");
+      showWarningToast("아이디를 입력해주세요.");
       e.target.mb_id.focus();
     } else if (!e.target.mb_pw.value) {
-      alert("비밀번호를 입력해주세요.");
+      showWarningToast("비밀번호를 입력해주세요.");
       e.target.mb_pw.focus();
     } else {
       loginMutation.mutate(sendParams);
@@ -65,12 +67,12 @@ const Login = () => {
             gutterBottom
             sx={{ textAlign: "center", marginBottom: "2.5rem" }}
           >
-            <Link to={"/"}>Dogrimong</Link>
+            <Link to={"/"}>MapleFlipnote</Link>
           </Typography>
           <TextField
             required
             id="standard-required"
-            label="아이디"
+            label="ID"
             defaultValue=""
             variant="standard"
             type="text"
@@ -79,20 +81,15 @@ const Login = () => {
           <TextField
             required
             id="standard-required"
-            label="비밀번호"
+            label="PASSWORD"
             defaultValue=""
             variant="standard"
             type="password"
             name="mb_pw"
           />
-          <LoginBtn type="submit">로그인</LoginBtn>
+          <LoginBtn type="submit">LOGIN</LoginBtn>
         </Box>
-        <GuideRegister>
-          도그리몽에 처음이세요? &nbsp;&nbsp;&nbsp;
-          <Link to="/register">
-            <MoveRegister>회원 가입하기</MoveRegister>
-          </Link>
-        </GuideRegister>
+        <GuideRegister>자동으로 로그인 정보로 회원가입됩니다.</GuideRegister>
       </LoginWrapper>
     </LoginContainer>
   );

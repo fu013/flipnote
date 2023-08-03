@@ -13,12 +13,8 @@ import Divider from "@mui/material/Divider";
 import { getImgURL } from "lib/getImgURL";
 import styled from "@emotion/styled";
 import { useRecoilState } from "recoil";
-import {
-  ListItemInfo,
-  leftState,
-  rightState,
-  checkedState,
-} from "services/recoil/atom";
+import { leftState, rightState, checkedState } from "services/recoil/atom";
+import { ListItemInfo } from "services/interfaces/todo.interface";
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -175,7 +171,6 @@ export const TodoList = () => {
 
   return (
     <div>
-      <h5></h5>
       <Grid
         container
         spacing={2}

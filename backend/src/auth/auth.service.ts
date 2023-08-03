@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Inject,
   Injectable,
@@ -20,6 +21,7 @@ import {
 } from 'src/config/config';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { loginMemberDto } from './dto/login-member.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +29,7 @@ export class AuthService {
     private readonly memberRepository: MemberRepository,
     private jwtService: JwtService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   /* JWT 토큰 인증이 완료되면, 로그인 멤버정보 반환 */
   public async getMemberByTokenId(mb_id: string) {
@@ -74,9 +76,15 @@ export class AuthService {
         },
       });
       if (!member) {
-        throw new UnauthorizedException({
-          message: '존재하지 않는 아이디입니다.',
-        });
+        // 아이디가 존재하지 않으면, 회원가입 후 로그인
+        const saltOrRounds = 10;
+        const new_mb_pw = await Bcrypt.hash(mb_pw, saltOrRounds);
+        const newMember = new Member();
+        newMember.mb_id = mb_id;
+        newMember.mb_pw = new_mb_pw;
+        newMember.cnt_login_date = new Date();
+        await this.memberRepository.save(newMember);
+        return newMember;
       } else {
         const passwordCheck = await Bcrypt.compare(mb_pw, member.mb_pw);
         if (!passwordCheck) {
