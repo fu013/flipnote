@@ -8,14 +8,12 @@ import {
   Res,
   Get,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly AuthService: AuthService
-  ) { }
+  constructor(private readonly AuthService: AuthService) {}
 
   // 토큰 인증 확인
   @Get('/jwt')

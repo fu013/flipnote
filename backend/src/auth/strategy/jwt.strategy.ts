@@ -1,7 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { AuthService } from '../auth.service';
 import { JWT_ACCESS_TOKEN_SECRET } from 'src/config/config';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -12,7 +11,7 @@ import { MemberRepository } from 'src/repository/member.repository';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    private readonly memberRepository: MemberRepository
+    private readonly memberRepository: MemberRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Request로부터 JWT토큰을 추출한다. 표준은 Request의 헤더인 Authorization header에서 bearer token을 사용하는것이다.
@@ -27,7 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // express jwt.verify의 기능과 비슷한 역할을 간단하게 어노테이션을 통하여 실행시켜준다.
   async validate(payload: any) {
     try {
-      return await this.memberRepository.findOne({ where: { mb_id: payload.mb_id } });
+      return await this.memberRepository.findOne({
+        where: { mb_id: payload.mb_id },
+      });
     } catch (e) {
       this.logger.debug(e);
       throw new BadRequestException({

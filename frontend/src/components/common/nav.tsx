@@ -25,10 +25,17 @@ import { getCookie } from "services/utils/cookie";
 import { useAuth_a } from "services/axios/auth.axios";
 import { isLoggedInAtom } from "services/recoil/auth";
 import customToast from "lib/customToast";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Menu from "@mui/material/Menu";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
 
 interface Props {
   window?: () => Window;
 }
+
+const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const drawerWidth = 240;
 const LogoContainer = styled.div`
@@ -47,17 +54,26 @@ const LogoText = styled.span``;
 export default function Nav(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [logIn, setLogIn] = useRecoilState(isLoggedInAtom);
+  const user = useRecoilValue(userInfoAtom);
+  const token = useRecoilValue(accessTokenAtom);
+  const useAuthA = useAuth_a();
   const navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
   const handlePageMove = (url: string) => {
     navigate(url);
   };
-  const [logIn, setLogIn] = useRecoilState(isLoggedInAtom);
-  const user = useRecoilValue(userInfoAtom);
-  const token = useRecoilValue(accessTokenAtom);
-  const useAuthA = useAuth_a();
 
   useEffect(() => {
     if (getCookie("isAccess") >= 1 && user && token) setLogIn(true);
@@ -68,7 +84,7 @@ export default function Nav(props: Props) {
     return (
       <LogoContainer>
         <LogoImage src={getImgURL("favicon.png")} />
-        <LogoText>MapleFilpnote</LogoText>
+        <LogoText>dailyMaple</LogoText>
       </LogoContainer>
     );
   };
@@ -144,14 +160,7 @@ export default function Nav(props: Props) {
                 {arrStr[0]}
               </Button>
             ))}
-            {logIn ? ( // 로그인 상태가 오프라인인 경우
-              <Button
-                sx={{ color: "#fff", fontSize: "1.5rem" }}
-                onClick={() => handleLogout()}
-              >
-                Logout
-              </Button>
-            ) : (
+            {!logIn ? ( // 비로그인
               <Button
                 sx={{ color: "#fff", fontSize: "1.5rem" }}
                 onClick={() => {
@@ -160,8 +169,60 @@ export default function Nav(props: Props) {
               >
                 Login
               </Button>
-            )}
+            ) : null}
           </Box>
+          {logIn ? ( // 로그인
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src={getImgURL("image034.png")} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting, index) =>
+                  // 로그아웃 버튼에 대한 조건 추가
+                  setting === "Logout" ? (
+                    <MenuItem
+                      key={index}
+                      onClick={() => {
+                        handleLogout();
+                        handleCloseUserMenu();
+                      }}
+                    >
+                      <Typography align="center">{setting}</Typography>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem key={index} onClick={handleCloseUserMenu}>
+                      <Typography align="center">{setting}</Typography>
+                    </MenuItem>
+                  )
+                )}
+              </Menu>
+            </Box>
+          ) : null}
+          <DarkModeIcon
+            style={{
+              marginLeft: "1rem",
+              cursor: "pointer",
+              fontSize: "3rem",
+              color: "yellow",
+            }}
+          />
         </Toolbar>
       </AppBar>
       <Box component="nav">

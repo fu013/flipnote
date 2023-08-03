@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -11,10 +11,15 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { getImgURL } from "lib/getImgURL";
-import styled from "@emotion/styled";
 import { useRecoilState } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
+import styled from "@emotion/styled";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+/* import PhoneIcon from "@mui/icons-material/Phone";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import PersonPinIcon from "@mui/icons-material/PersonPin"; */
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -48,6 +53,7 @@ export const TodoList = () => {
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
+  const [value, setValue] = useState(0);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -68,6 +74,11 @@ export const TodoList = () => {
       newChecked.splice(currentIndex, 1);
     }
     setChecked(newChecked);
+  };
+
+  // Tab Value Change
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
   };
 
   // 체크 개수 개수하기
@@ -160,7 +171,11 @@ export const TodoList = () => {
                   }}
                 />
               </ListItemIcon>
-              <img src={getImgURL(item.image)} alt={`Image ${item.id}`} />
+              <img
+                src={getImgURL(item.image)}
+                alt={`Image ${item.id}`}
+                style={{ marginRight: "1rem" }}
+              />
               <ListItemText id={labelId} primary={item.name} />
             </CustomListItem>
           );
@@ -171,6 +186,23 @@ export const TodoList = () => {
 
   return (
     <div>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="icon label tabs example"
+        sx={{
+          marginBottom: "2rem",
+          marginTop: "3rem",
+          "& *": {
+            fontFamily: "Noto Sans, sans-serif !important",
+            fontSize: "1.5rem !important",
+          },
+        }}
+      >
+        <Tab label="일간" />
+        <Tab label="주간" />
+        <Tab label="월간" />
+      </Tabs>
       <Grid
         container
         spacing={2}
@@ -178,7 +210,7 @@ export const TodoList = () => {
         alignItems="center"
         sx={{ "& *": { fontFamily: "Noto Sans, sans-serif !important" } }}
       >
-        <Grid item>{customList("오늘의 할일", left)}</Grid>
+        <Grid item>{customList("TodoList", left)}</Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Button
@@ -204,14 +236,16 @@ export const TodoList = () => {
             <Button
               sx={{ my: 0.5 }}
               variant="outlined"
+              size="small"
+              onClick={handleCheckedLeft}
               disabled={rightChecked.length === 0}
-              aria-label="result save"
+              aria-label="selected save"
             >
-              저장
+              Save
             </Button>
           </Grid>
         </Grid>
-        <Grid item>{customList("완료된 일들", right)}</Grid>
+        <Grid item>{customList("Completed", right)}</Grid>
       </Grid>
     </div>
   );

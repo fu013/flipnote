@@ -24,7 +24,7 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
           ? ((
               config.headers as AxiosRequestHeaders
             ).Authorization = `Bearer ${accessToken}`)
-          : customToast("로그인 토큰이 존재하지 않습니다.", "warning");
+          : customToast("로그인 토큰이 존재하지 않습니다.", "error");
       }
       return config;
     },

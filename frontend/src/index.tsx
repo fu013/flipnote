@@ -7,7 +7,7 @@ import reportWebVitals from "reportWebVitals";
 import Router from "router";
 import "static/css/common.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // react-query 및 쿼리 로딩 suspense 설정

@@ -10,7 +10,7 @@ const Footer = () => {
     color: #aaa;
   `;
   return (
-    <FooterBox>Copyright ⓒ 2023 MapleFlipnote. All Right Reserved.</FooterBox>
+    <FooterBox>Copyright ⓒ 2023 dailyMaple. All Right Reserved.</FooterBox>
   );
 };
 

@@ -1,9 +1,13 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import Footer from "components/common/footer";
 import Header from "components/common/header";
-import CharacterList from "components/main/characterList";
+import CharacterPreset from "components/main/characterPreset";
 import TodoList from "components/main/todoList";
+import TodoPreset from "components/main/todoPreset";
+import RecordLogBox from "components/main/recordLogBox";
 import { getImgURL } from "lib/getImgURL";
 import { CmContainer, CmWrapper } from "style/commonStyled";
+import { CharacterCard, CharacterLevel, CharacterName } from "./App.style";
 
 function App() {
   return (
@@ -12,10 +16,18 @@ function App() {
       <CmContainer>
         <CmWrapper>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img src={getImgURL("default.png")} alt="character profile" />
-            <CharacterList />
+            <CharacterCard>
+              <img
+                src={getImgURL("default.png")}
+                alt="character Profile Image"
+              />
+              <CharacterName>삔제</CharacterName>
+              <CharacterLevel>Lv. 278</CharacterLevel>
+            </CharacterCard>
+            <CharacterPreset />
+            <TodoPreset />
+            <RecordLogBox />
           </div>
-          <h5>일간 | 주간 | 월간</h5>
           <TodoList />
         </CmWrapper>
       </CmContainer>

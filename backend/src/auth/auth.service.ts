@@ -176,7 +176,6 @@ export class AuthService {
       await res.cookie('isAccess', '', {
         maxAge: '0',
       });
-      console.log('로그아웃 처리완료');
       return res.send({
         message: 'logout',
       });
