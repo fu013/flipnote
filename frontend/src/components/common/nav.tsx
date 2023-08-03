@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import * as React from "react";
+import { useState, MouseEvent } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -35,8 +35,6 @@ interface Props {
   window?: () => Window;
 }
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
 const drawerWidth = 240;
 const LogoContainer = styled.div`
   display: inline-flex;
@@ -50,19 +48,18 @@ const LogoImage = styled.img`
 `;
 
 const LogoText = styled.span``;
+const profileSubMenu = ["프로필", "로그", "대쉬보드", "로그아웃"];
 
 export default function Nav(props: Props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [logIn, setLogIn] = useRecoilState(isLoggedInAtom);
   const user = useRecoilValue(userInfoAtom);
   const token = useRecoilValue(accessTokenAtom);
   const useAuthA = useAuth_a();
   const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
   const handleCloseUserMenu = () => {
@@ -172,7 +169,7 @@ export default function Nav(props: Props) {
             ) : null}
           </Box>
           {logIn ? ( // 로그인
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, marginLeft: "1rem" }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt="Remy Sharp" src={getImgURL("image034.png")} />
@@ -194,9 +191,8 @@ export default function Nav(props: Props) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting, index) =>
-                  // 로그아웃 버튼에 대한 조건 추가
-                  setting === "Logout" ? (
+                {profileSubMenu.map((subMenu, index) =>
+                  subMenu === "Logout" ? (
                     <MenuItem
                       key={index}
                       onClick={() => {
@@ -204,11 +200,11 @@ export default function Nav(props: Props) {
                         handleCloseUserMenu();
                       }}
                     >
-                      <Typography align="center">{setting}</Typography>
+                      <Typography align="center">{subMenu}</Typography>
                     </MenuItem>
                   ) : (
                     <MenuItem key={index} onClick={handleCloseUserMenu}>
-                      <Typography align="center">{setting}</Typography>
+                      <Typography align="center">{subMenu}</Typography>
                     </MenuItem>
                   )
                 )}

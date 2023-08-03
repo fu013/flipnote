@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, SyntheticEvent } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -17,9 +17,6 @@ import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-/* import PhoneIcon from "@mui/icons-material/Phone";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import PersonPinIcon from "@mui/icons-material/PersonPin"; */
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -77,7 +74,7 @@ export const TodoList = () => {
   };
 
   // Tab Value Change
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
