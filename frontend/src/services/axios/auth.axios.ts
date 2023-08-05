@@ -17,9 +17,9 @@ export const useAuth_a = () => {
     }
   };
 
-  const logout = async (mb_id: string, callback: any) => {
+  const logout = async (mbId: string, callback: any) => {
     try {
-      const res = await instance.post("/auth/logout", { mb_id });
+      const res = await instance.post("/auth/logout", { mbId });
       document.cookie = `isAccess=;max-age=${"0"}`;
       clearInterval(REFRESH_TOKEN_INTERVAL);
       callback();

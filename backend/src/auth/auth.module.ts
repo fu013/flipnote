@@ -8,7 +8,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtRefreshStrategy } from './strategy/jwtRefresh.strategy';
-import Member from 'src/entity/member.entity';
+import { Member } from 'src/entity/member.entity';
 
 @Module({ // import해주면 Service나 Controller 단에서 MemberRepository를 생성자의 파라미터로 받아 사용가능
     imports: [ // Member Entity를 조작하기 위해 만들어둔 래퍼지토리를 서비스에 주입하기 위하여, 임포트에 작성하여 서비스쪽으로 injection함

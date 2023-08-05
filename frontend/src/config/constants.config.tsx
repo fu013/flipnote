@@ -11,7 +11,6 @@ export const SERVER_URL: string = "http://localhost:29000"; // [THIS] API 서버
 export const CLIENT_URL: string = "http://localhost:28000"; // CLIENT 서버 END-POINT
 export const LOCAL_FRONT_IMG_URL: string = "static/images/";
 export const LOCAL_SERVER_IMG_URL: string = `${SERVER_URL}/uploads`; // 서버 로컬 이미지 저장소 url
-export const ADMIN_BASE_URL: string = "/admin"; // ADMIN 페이지 END-POINT
 export let ACCESS_TOKEN: string = ""; // JWT CLIENT ACCESS_TOKEN 저장 변수
 export const setAccessToken = (AccessToken: string) => {
   // 액세스 토큰 세터

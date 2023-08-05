@@ -9,11 +9,17 @@ import {
 import { TypeOrmConfigService } from './config/typeorm.config.service';
 import { NODE_ENV } from './config/config';
 import { AuthModule } from './auth/auth.module';
+import { CrawlerModule } from './crawler/crawler.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
 
 /* NESTJS에서 앱은 여러개의 모듈로 구성되어있음 */
 @Module({
   imports: [
     AuthModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '../static'),
+    }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     WinstonModule.forRoot({
       /* { 
@@ -52,6 +58,7 @@ import { AuthModule } from './auth/auth.module';
         }),
       ],
     }),
+    CrawlerModule,
   ],
   controllers: [AppController],
   providers: [],

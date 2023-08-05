@@ -31,15 +31,15 @@ const Login = () => {
   const login = (e: any) => {
     e.preventDefault();
     const sendParams = {
-      mb_id: e.target.mb_id.value,
-      mb_pw: e.target.mb_pw.value,
+      mbId: e.target.mbId.value,
+      mbPw: e.target.mbPw.value,
     };
-    if (!e.target.mb_id.value) {
+    if (!e.target.mbId.value) {
       customToast("아이디를 입력해주세요.", "warning");
-      e.target.mb_id.focus();
-    } else if (!e.target.mb_pw.value) {
+      e.target.mbId.focus();
+    } else if (!e.target.mbPw.value) {
       customToast("비밀번호를 입력해주세요.", "warning");
-      e.target.mb_pw.focus();
+      e.target.mbPw.focus();
     } else {
       customToast("환영합니다.", "success");
       loginMutation.mutate(sendParams);
@@ -73,7 +73,7 @@ const Login = () => {
             defaultValue=""
             variant="standard"
             type="text"
-            name="mb_id"
+            name="mbId"
           />
           <TextField
             required
@@ -82,7 +82,7 @@ const Login = () => {
             defaultValue=""
             variant="standard"
             type="password"
-            name="mb_pw"
+            name="mbPw"
           />
           <LoginBtn type="submit">LOGIN</LoginBtn>
         </Box>

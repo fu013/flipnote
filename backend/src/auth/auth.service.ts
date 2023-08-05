@@ -8,7 +8,6 @@ import {
   Res,
   BadRequestException,
 } from '@nestjs/common';
-import Member from '../entity/member.entity';
 import { MemberRepository } from '../repository/member.repository';
 import * as Bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +20,7 @@ import {
 } from 'src/config/config';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { loginMemberDto } from './dto/login-member.dto';
+import { Member } from 'src/entity/member.entity';
 
 @Injectable()
 export class AuthService {
@@ -29,12 +28,12 @@ export class AuthService {
     private readonly memberRepository: MemberRepository,
     private jwtService: JwtService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   /* JWT 토큰 인증이 완료되면, 로그인 멤버정보 반환 */
-  public async getMemberByTokenId(mb_id: string) {
+  public async getMemberByTokenId(mbId: string) {
     const member = await this.memberRepository.findOne({
-      where: { mb_id: mb_id },
+      where: { mbId: mbId },
     });
     return member;
   }
@@ -53,7 +52,7 @@ export class AuthService {
         domain: rTokenObj.domain,
         maxAge: rTokenObj.maxAge,
       });
-      await this.setRefreshTokenDB(rTokenObj.refreshToken, req.user.mb_id);
+      await this.setRefreshTokenDB(rTokenObj.refreshToken, req.user.mbId);
       return Object.assign({
         status: 201,
         statusText: '액세스 토큰이 발급되었습니다.',
@@ -68,33 +67,33 @@ export class AuthService {
   }
 
   // 로그인 요청 시 토큰 발급전, DB에서 아이디, 비밀번호 일치하는지 유효성 검사
-  public async validateMember(mb_id: string, mb_pw: string) {
+  public async validateMember(mbId: string, mbPw: string) {
     try {
       const member: Member = await this.memberRepository.findOne({
         where: {
-          mb_id: mb_id,
+          mbId: mbId,
         },
       });
       if (!member) {
         // 아이디가 존재하지 않으면, 회원가입 후 로그인
         const saltOrRounds = 10;
-        const new_mb_pw = await Bcrypt.hash(mb_pw, saltOrRounds);
+        const new_mbPw = await Bcrypt.hash(mbPw, saltOrRounds);
         const newMember = new Member();
-        newMember.mb_id = mb_id;
-        newMember.mb_pw = new_mb_pw;
-        newMember.cnt_login_date = new Date();
+        newMember.mbId = mbId;
+        newMember.mbPw = new_mbPw;
+        newMember.cntLoginDate = new Date();
         await this.memberRepository.save(newMember);
         return newMember;
       } else {
-        const passwordCheck = await Bcrypt.compare(mb_pw, member.mb_pw);
+        const passwordCheck = await Bcrypt.compare(mbPw, member.mbPw);
         if (!passwordCheck) {
           throw new BadRequestException({
             message: '비밀번호가 일치하지 않습니다.',
           });
         } else {
-          member.cnt_login_date = new Date();
+          member.cntLoginDate = new Date();
           await this.memberRepository.save(member);
-          const { mb_pw, ...result } = member;
+          const { mbPw, ...result } = member;
           return result;
         }
       }
@@ -107,7 +106,7 @@ export class AuthService {
   // 액세스 토큰 생성
   public makeAccessToken(member: Member) {
     try {
-      const payload = { mb_id: member.mb_id };
+      const payload = { mbId: member.mbId };
       const token = this.jwtService.sign(payload, {
         secret: JWT_ACCESS_TOKEN_SECRET,
         expiresIn: JWT_ACCESS_TOKEN_EXPIRATION_TIME + 's',
@@ -124,7 +123,7 @@ export class AuthService {
   // 리프레쉬 토큰 생성
   private makeRefreshToken(member: any) {
     try {
-      const payload = { mb_id: member.mb_id };
+      const payload = { mbId: member.mbId };
       const token = this.jwtService.sign(payload, {
         secret: JWT_REFRESH_TOKEN_SECRET,
         expiresIn: JWT_REFRESH_TOKEN_EXPIRATION_TIME + 's',
@@ -142,10 +141,10 @@ export class AuthService {
   }
 
   // 리프래쉬 토큰 DB에 등록
-  private async setRefreshTokenDB(refreshToken: string, mb_id: string) {
+  private async setRefreshTokenDB(refreshToken: string, mbId: string) {
     try {
       const member = await this.memberRepository.findOne({
-        where: { mb_id: mb_id },
+        where: { mbId: mbId },
       });
       if (!member) {
         throw new UnauthorizedException({
@@ -153,7 +152,7 @@ export class AuthService {
         });
       } else {
         const saltOrRounds = 10;
-        member.login_refresh_token = await Bcrypt.hash(
+        member.loginRefreshToken = await Bcrypt.hash(
           refreshToken,
           saltOrRounds,
         );
@@ -166,9 +165,9 @@ export class AuthService {
   }
 
   // 로그아웃 :: Refresh 토큰 DB 및 헤더 만료시키기
-  public async logout(mb_id: string, @Res() res) {
+  public async logout(mbId: string, @Res() res) {
     try {
-      await this.setNullRefreshToken(mb_id);
+      await this.setNullRefreshToken(mbId);
       await res.cookie('Refresh', '', {
         httpOnly: false,
         maxAge: '0',
@@ -186,20 +185,20 @@ export class AuthService {
   }
 
   // 리프래쉬 토큰 유효성 검사 후, 성공시 JWT strategy에 유저 정보 리턴
-  public async getUserIfRefreshTokenMatches(rToken: string, mb_id: string) {
+  public async getUserIfRefreshTokenMatches(rToken: string, mbId: string) {
     try {
       const member = await this.memberRepository.findOne({
-        where: { mb_id: mb_id },
+        where: { mbId: mbId },
       });
       if (!member) {
         throw new UnauthorizedException({
           message: '존재하지 않는 아이디입니다.',
         });
       } else {
-        if (rToken && member.login_refresh_token) {
+        if (rToken && member.loginRefreshToken) {
           const isRefreshTokenMatching = await Bcrypt.compare(
             rToken,
-            member.login_refresh_token,
+            member.loginRefreshToken,
           );
           if (isRefreshTokenMatching) {
             return member;
@@ -219,17 +218,17 @@ export class AuthService {
   }
 
   // 리프래쉬 토큰 Null 설정, 로그아웃 처리
-  public async setNullRefreshToken(mb_id: string) {
+  public async setNullRefreshToken(mbId: string) {
     try {
       const member = await this.memberRepository.findOne({
-        where: { mb_id: mb_id },
+        where: { mbId: mbId },
       });
       if (!member) {
         throw new UnauthorizedException({
           message: '존재하지 않는 아이디입니다.',
         });
       } else {
-        member.login_refresh_token = null;
+        member.loginRefreshToken = null;
         return await this.memberRepository.save(member);
       }
     } catch (e) {

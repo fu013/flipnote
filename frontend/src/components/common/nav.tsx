@@ -87,7 +87,7 @@ export default function Nav(props: Props) {
   };
 
   const handleLogout = () => {
-    useAuthA.logout(user.mb_id, () => {
+    useAuthA.logout(user.mbId, () => {
       setLogIn(false);
       customToast("로그아웃 되었습니다", "success");
     });
@@ -192,7 +192,7 @@ export default function Nav(props: Props) {
                 onClose={handleCloseUserMenu}
               >
                 {profileSubMenu.map((subMenu, index) =>
-                  subMenu === "Logout" ? (
+                  subMenu === "로그아웃" ? (
                     <MenuItem
                       key={index}
                       onClick={() => {

@@ -15,15 +15,15 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   ) {
     // !주의! 변수명을 username 과 password 등과 같이 정해진 규칙에 맞게 네이밍 하지 않는다면, 에러가 발생한다.
     super({
-      usernameField: 'mb_id',
-      passwordField: 'mb_pw',
+      usernameField: 'mbId',
+      passwordField: 'mbPw',
       passReqToCallback: false,
     });
   }
   // 아이디, 비밀번호에 대한 유효성 검사
-  async validate(mb_id: string, mb_pw: string): Promise<any> {
+  async validate(mbId: string, mbPw: string): Promise<any> {
     try {
-      return await this.authService.validateMember(mb_id, mb_pw);
+      return await this.authService.validateMember(mbId, mbPw);
     } catch (e) {
       this.logger.error(e);
       throw e;

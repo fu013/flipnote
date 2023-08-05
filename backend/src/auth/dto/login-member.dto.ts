@@ -6,8 +6,8 @@ entity는 데이터베이스와의 1:1 매핑이지만, dto는 요청데이터�
 */
 export class loginMemberDto {
     @IsString()
-    readonly mb_id: string;
+    readonly mbId: string;
 
     @IsString()
-    readonly mb_pw: string;
+    readonly mbPw: string;
 }

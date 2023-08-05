@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import Member from 'src/entity/member.entity';
+import { Character } from 'src/entity/character.entity';
+import { Member } from 'src/entity/member.entity';
+import { Todo } from 'src/entity/todo.entity';
 import {
   MYSQL_DB_HOST,
   MYSQL_DB_NAME,
@@ -22,7 +24,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: MYSQL_DB_PW,
       database: MYSQL_DB_NAME,
       synchronize: MYSQL_DB_Synch, // development: true, production: false
-      entities: [Member],
+      entities: [Member, Character, Todo],
     };
   }
 }

@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly AuthService: AuthService) {}
+  constructor(private readonly AuthService: AuthService) { }
 
   // 토큰 인증 확인
   @Get('/jwt')
@@ -31,8 +31,8 @@ export class AuthController {
 
   // 로그아웃 요청
   @Post('/logout')
-  public async logout(@Body('mb_id') mb_id: string, @Res() res) {
-    return await this.AuthService.logout(mb_id, res);
+  public async logout(@Body('mbId') mbId: string, @Res() res) {
+    return await this.AuthService.logout(mbId, res);
   }
 
   // 액세스 토큰 갱신 요청
@@ -47,7 +47,7 @@ export class AuthController {
         token: this.AuthService.makeAccessToken(req.user).accessToken,
       });
     } catch (error) {
-      this.AuthService.logout(req.user.mb_id, res);
+      this.AuthService.logout(req.user.mbId, res);
       console.log(error);
     }
   }
