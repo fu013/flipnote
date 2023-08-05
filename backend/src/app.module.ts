@@ -11,6 +11,8 @@ import { NODE_ENV } from './config/config';
 import { AuthModule } from './auth/auth.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { CharModule } from './char/char.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import path from 'path';
 
 /* NESTJS에서 앱은 여러개의 모듈로 구성되어있음 */
@@ -19,6 +21,16 @@ import path from 'path';
     AuthModule,
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '../static'),
+    }),
+    ThrottlerModule.forRoot({ // default는 300초(5분)당 1000번의 요청 허용
+      ignoreUserAgents: [
+        // 구글 봇을 통한 요청 무시(테러 방지), 하지만 google검색에 내 사이트에 검색이 되지않을수도 있으니 유의
+        /googlebot/gi,
+        // 빙 봇을 통한 요청 무시(테러 방지)
+        new RegExp('bingbot', 'gi'),
+      ],
+      ttl: 300,
+      limit: 1000,
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     WinstonModule.forRoot({
@@ -59,6 +71,7 @@ import path from 'path';
       ],
     }),
     CrawlerModule,
+    CharModule,
   ],
   controllers: [AppController],
   providers: [],

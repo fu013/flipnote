@@ -1,5 +1,7 @@
 import axios from "axios";
 import { REFRESH_TOKEN_INTERVAL } from "config/constants.config";
+import customErrorToast from "lib/customErrorToast";
+import customToast from "lib/customToast";
 import { LoginParams } from "services/interfaces/auth.interface";
 import { useAxiosCustom } from "services/setting/axios.custom";
 
@@ -12,7 +14,8 @@ export const useAuth_a = () => {
     try {
       const res = await instance.post("/auth/login", params);
       return res.data;
-    } catch (err) {
+    } catch (err: any) {
+      customErrorToast(err.response.data.statusCode);
       console.log(err);
     }
   };
@@ -24,7 +27,8 @@ export const useAuth_a = () => {
       clearInterval(REFRESH_TOKEN_INTERVAL);
       callback();
       return res.data;
-    } catch (err) {
+    } catch (err: any) {
+      customErrorToast(err.response.data.statusCode);
       console.log(err);
     }
   };
@@ -36,7 +40,8 @@ export const useAuth_a = () => {
         headers: { Authorization: "Bearer " + token },
       });
       return res.data;
-    } catch (err) {
+    } catch (err: any) {
+      customErrorToast(err.response.data.statusCode);
       console.log(err);
     }
   };
@@ -46,9 +51,10 @@ export const useAuth_a = () => {
     try {
       const res = await instance.post("/auth/refresh");
       return res;
-    } catch (err) {
+    } catch (err: any) {
       document.cookie = `isAccess=;max-age=${"0"}`;
       clearInterval(REFRESH_TOKEN_INTERVAL);
+      customErrorToast(err.response.data.statusCode);
       console.error(err);
     }
   };

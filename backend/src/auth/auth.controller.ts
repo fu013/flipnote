@@ -9,6 +9,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -24,6 +25,7 @@ export class AuthController {
 
   // 로그인 요청
   @Post('/login')
+  @Throttle(20, 300) // 5분, 20개의 요청으로 제한 (로그인과 동시에 회원가입도 이루어지므로 DB 용량 및 트래픽 관리 측면에서 해당 기능에 제한을 둠)
   @UseGuards(AuthGuard('local'))
   public async login(@Request() req, @Res({ passthrough: true }) res) {
     return await this.AuthService.login(req, res);

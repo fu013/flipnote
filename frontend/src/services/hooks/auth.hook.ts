@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { accessTokenAtom, userInfoAtom } from "services/recoil/auth";
 import { useAuth_a } from "services/axios/auth.axios";
 import { LoginParams } from "services/interfaces/auth.interface";
+import customToast from "lib/customToast";
 
 // authorization 관련 hook
 export const useAuth_h = () => {
@@ -34,10 +35,11 @@ export const useAuth_h = () => {
         SET_REFRESH_TOKEN_INTERVAL(interval);
         setAccessTokenAtom(res.data.token);
         setUserInfoAtom(await useAuthA.getUserWithToken(res.data.token));
+        customToast("환영합니다.", "success");
         window.location.replace("/");
       },
-      onError: () => {
-        alert("아이디 또는 비밀번호를 확인해주세요.");
+      onError: (err: any) => {
+        console.log(err);
       },
     });
   };
@@ -60,7 +62,7 @@ export const useAuth_h = () => {
           SET_REFRESH_TOKEN_INTERVAL(interval);
         }, 1000);
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.log(err);
       },
     });

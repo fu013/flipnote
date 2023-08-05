@@ -22,9 +22,9 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
       if (auth) {
         accessToken
           ? ((
-              config.headers as AxiosRequestHeaders
-            ).Authorization = `Bearer ${accessToken}`)
-          : customToast("로그인 토큰이 존재하지 않습니다.", "error");
+            config.headers as AxiosRequestHeaders
+          ).Authorization = `Bearer ${accessToken}`)
+          : customToast("로그인 상태에서만 가능한 기능입니다.", "warning");
       }
       return config;
     },

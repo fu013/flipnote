@@ -41,7 +41,6 @@ const Login = () => {
       customToast("비밀번호를 입력해주세요.", "warning");
       e.target.mbPw.focus();
     } else {
-      customToast("환영합니다.", "success");
       loginMutation.mutate(sendParams);
     }
   };

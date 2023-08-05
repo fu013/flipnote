@@ -30,7 +30,7 @@ export class AuthService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
 
-  /* JWT 토큰 인증이 완료되면, 로그인 멤버정보 반환 */
+  // JWT 토큰 인증이 완료되면, 로그인 멤버정보 반환
   public async getMemberByTokenId(mbId: string) {
     const member = await this.memberRepository.findOne({
       where: { mbId: mbId },
