@@ -4,10 +4,10 @@ import { SERVER_URL } from "config/constants.config";
 import { accessTokenAtom } from "services/recoil/auth";
 import customToast from "lib/customToast";
 
-// JWT 토큰 인증 Axios 요청폼, 인터셉터 극한의 커스터마이징
+// JWT 토큰 인증 ON/OFF 공통 Axios 요청훅
 export const useAxiosCustom = (auth: boolean): AxiosInstance => {
   const accessToken = useRecoilValue(accessTokenAtom);
-
+  console.log("useAxiosCustom 액세스 토큰: " + accessToken);
   const axiosInstance = axios.create({
     baseURL: `${SERVER_URL}/`,
     withCredentials: true,
@@ -24,7 +24,7 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
           ? ((
             config.headers as AxiosRequestHeaders
           ).Authorization = `Bearer ${accessToken}`)
-          : customToast("로그인 상태에서만 가능한 기능입니다.", "warning");
+          : customToast("로그인 사용자만 이용할 수 있는 기능입니다.", "warning");
       }
       return config;
     },

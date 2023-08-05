@@ -11,6 +11,9 @@ export class CharService {
     private readonly crawlerService: CrawlerService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
+  public async getCharacterInfoByMemberId(mbId: string) {
+    return this.charRepository.getCharacterInfoByMemberId(mbId);
+  }
   public async setCharacter(mbId: string, charName: string) {
     const image = await this.crawlerService.getCharacterProfileImg(charName);
     const murung = await this.crawlerService.getCharacterMurung(charName);

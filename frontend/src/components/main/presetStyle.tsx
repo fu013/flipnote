@@ -52,3 +52,13 @@ export const PresetAdd = styled.div`
 export const PresetCharacterName = styled.span`
   font-weight: 900;
 `;
+export const CharacterCard = styled.div`
+  border: 1px solid #0033ff;
+  border-radius: 4px;
+`;
+export const CharacterName = styled.p`
+  text-align: center;
+`;
+export const CharacterLevel = styled.p`
+  text-align: center;
+`;

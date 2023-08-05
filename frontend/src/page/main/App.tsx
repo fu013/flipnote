@@ -5,26 +5,19 @@ import CharacterPreset from "components/main/characterPreset";
 import TodoList from "components/main/todoList";
 import TodoPreset from "components/main/todoPreset";
 import RecordLogBox from "components/main/recordLogBox";
-import { getImgURL } from "lib/getImgURL";
 import { CmContainer, CmWrapper } from "style/commonStyled";
-import { CharacterCard, CharacterLevel, CharacterName } from "./App.style";
+import { useFetchChar } from "services/react-query/character.query";
+import { CharacterData } from "services/interfaces/char.interface";
 
-function App() {
+const App = () => {
+  const { char, char_isLoading }: { char: CharacterData[], char_isLoading: boolean } = useFetchChar();
   return (
     <div className="App" style={{ fontSize: "2rem" }}>
       <Header />
       <CmContainer>
         <CmWrapper>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <CharacterCard>
-              <img
-                src={getImgURL("default.png")}
-                alt="character Profile Image"
-              />
-              <CharacterName>삔제</CharacterName>
-              <CharacterLevel>Lv. 278</CharacterLevel>
-            </CharacterCard>
-            <CharacterPreset />
+            <CharacterPreset charData={char} />
             <TodoPreset />
             <RecordLogBox />
           </div>

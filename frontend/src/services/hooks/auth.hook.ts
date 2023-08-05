@@ -53,6 +53,7 @@ export const useAuth_h = () => {
           const interval = setInterval(async () => {
             const res = await useAuthA.silentRefresh();
             if (res?.status === 201) {
+              console.log("실제 가야할 액세스 토큰: " + res?.data.token);
               setAccessTokenAtom(res?.data.token);
             } else {
               resetUserInfoAtom();
