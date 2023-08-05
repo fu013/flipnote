@@ -19,7 +19,7 @@ const CharacterPreset = () => {
 
   }, []);
   const handleSetChar = async () => {
-    customToast(await useCharacterA.setCharacter(JSON.stringify(characterName)), "success");
+    await useCharacterA.setCharacter(characterName);
   };
   return (
     <PresetContainer>

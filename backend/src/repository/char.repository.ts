@@ -9,15 +9,33 @@ export class CharRepository extends Repository<Character> {
     ) {
         super(Character, dataSource.createEntityManager());
     }
+    async setCharacter(mbId: string, chName: string, chImage: string, chLevel: string, chMurung: string): Promise<void> {
+        const queryRunner = this.dataSource.createQueryRunner();
+        try {
+            // 트랜잭션 시작
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
 
-    async getMemberAll(): Promise<Character[]> {
-        return await this.createQueryBuilder('m')
-            .select([
-                'm.mb_no',
-                'm.mb_id',
-                'm.created_date',
-            ])
-            .orderBy('m.mb_id', 'DESC')
-            .getMany();
+            // Character 엔티티 생성
+            const character = new Character();
+            character.mbId = mbId;
+            character.chImage = chImage;
+            character.chName = chName;
+            character.chLevel = chLevel;
+            character.chMurung = chMurung;
+
+            // Character 엔티티 저장
+            await queryRunner.manager.save(character);
+
+            // 트랜잭션 커밋
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            // 에러 발생 시 롤백
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            // QueryRunner 해제
+            await queryRunner.release();
+        }
     }
 }

@@ -10,23 +10,26 @@ export class Character {
   @PrimaryColumn({ name: 'ch_name' })
   chName: string;
 
-  @Column({ name: 'ch_level', type: 'smallint', nullable: true })
-  chLevel: number | null;
+  @Column({ name: 'ch_image', type: 'text', nullable: true })
+  chImage: string | null;
 
-  @Column({ name: 'ch_murung', type: 'tinyint', nullable: true })
-  chMurung: number | null;
+  @Column({ name: 'ch_level', nullable: true })
+  chLevel: string | null;
+
+  @Column({ name: 'ch_murung', nullable: true })
+  chMurung: string | null;
 
   @Column({ name: 'daily_count', type: 'int', nullable: true })
-  dailyCount: number | null;
+  dailyCount: number | 0;
 
   @Column({ name: 'weekly_count', type: 'int', nullable: true })
-  weeklyCount: number | null;
+  weeklyCount: number | 0;
 
   @Column({ name: 'monthly_count', type: 'int', nullable: true })
-  monthlyCount: number | null;
-
+  monthlyCount: number | 0;
+  0
   @Column({ name: 'weekly_meso', type: 'bigint', nullable: true })
-  weeklyMeso: number | null;
+  weeklyMeso: number | 0;
 
   @Column({ name: 'todo_list', type: 'text', nullable: true })
   todoList: string | null;

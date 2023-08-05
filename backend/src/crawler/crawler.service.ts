@@ -19,13 +19,46 @@ export class CrawlerService {
       const $ = cheerio.load(response.data);
       const crawList = $('.character-avatar-row');
       const crawData = crawList.map((index, element) => {
-        const img = $(element).find('img').attr('src');
-        return { img };
+        const result = $(element).find('img').attr('src');
+        return result;
+      }).get();
+      console.log("JSON_IMG: " + JSON.stringify(crawData));
+      return crawData;
+    } catch (error) {
+      this.logger.error('Error occurred:', error);
+      throw new Error('An error occurred while Crawling [getCharacterProfileImg]');
+    }
+  }
+  public async getCharacterMurung(username: string) {
+    try {
+      const url = `${this.maplegg_user_URL}/${username}`;
+      const response = await axios.get(url);
+      const $ = cheerio.load(response.data);
+      const crawList = $('.user-summary-box-content');
+      const crawData = crawList.map((index, element) => {
+        const result = $(element).find('.user-summary-floor').text();
+        return result.substring(0, 2).trim();
       }).get();
       return crawData;
     } catch (error) {
       this.logger.error('Error occurred:', error);
-      throw new Error('An error occurred while fetching [CharacterProfileImg]');
+      throw new Error('An error occurred while Crawling [getCharacterMurung]');
+    }
+  }
+  public async getCharacterLevel(username: string) {
+    try {
+      const url = `${this.maplegg_user_URL}/${username}`;
+      const response = await axios.get(url);
+      const $ = cheerio.load(response.data);
+      const crawList = $('.user-summary-list');
+      const crawData = crawList.map((index, element) => {
+        const result = $(element).find('.user-summary-item').eq(0).text();
+        return result;
+      }).get();
+      return crawData;
+    } catch (error) {
+      this.logger.error('Error occurred:', error);
+      throw new Error('An error occurred while Crawling [getCharacterMurung]');
     }
   }
 }
