@@ -19,7 +19,8 @@ export const useCharacter_a = () => {
 
   const setCharacter = async (name: string) => {
     try {
-      await instance.post("/char/setCharacter", { charName: name });
+      const res = await instance.post("/char/setCharacter", { charName: name });
+      return res.data;
     } catch (err: any) {
       if (err.response) customErrorToast(err.response.data.statusCode);
       console.log(err);

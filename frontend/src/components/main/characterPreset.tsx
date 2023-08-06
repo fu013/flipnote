@@ -6,51 +6,58 @@ import { CharacterData } from "services/interfaces/char.interface";
 import {
   PresetAdd,
   PresetBox,
-  PresetDelete,
+  PresetDelBtn,
   PresetTitle,
   PresetContainer,
   PresetCharacterName,
   CharacterCard,
   CharacterName,
   CharacterLevel,
-  PresetItem, // Make sure to import PresetItem from the same file where it's defined
+  PresetItem,
+  CharacterContainer,
+  CharacterImage,
+  PresetAddInput,
+  PresetAddBtn,
 } from "./presetStyle";
+import { useFetchChar } from "services/react-query/character.query";
+import { useChar_h } from "services/hooks/char.hook";
 
-const CharacterPreset = ({ charData }: { charData: CharacterData[] }) => {
+const CharacterPreset = () => {
+  const { char, char_isLoading } = useFetchChar();
   const [characterName, setCharacterName] = useState("");
-  const [activeItem, setActiveItem] = useState(0); // Track the active item index
-  const useCharacterA = useCharacter_a();
+  const [activeItem, setActiveItem] = useState(0);
+  const useCharH = useChar_h();
+  const updateCharMutation = useCharH.useUpdateChar();
 
   const handleSetChar = async () => {
-    await useCharacterA.setCharacter(characterName);
+    await updateCharMutation.mutateAsync(characterName);
   };
 
   const handleItemClick = (index: number) => {
-    setActiveItem(index); // Set the clicked item as active
+    setActiveItem(index);
   };
 
   return (
-    <section style={{ display: "flex" }}>
+    <CharacterContainer>
       <CharacterCard>
-        {/* Display information of the active item */}
-        <img src={charData[activeItem].chImage} alt="character Profile Image" />
-        <CharacterName>{charData[activeItem].chName}</CharacterName>
-        <CharacterLevel>{charData[activeItem].chLevel} </CharacterLevel>
+        <CharacterImage src={char[activeItem]?.chImage || getImgURL("default.png")} alt="character Profile Image" />
+        <CharacterName>{char[activeItem]?.chName || "미생성"}</CharacterName>
+        <CharacterLevel>{char[activeItem]?.chLevel || "Lv. 1"} </CharacterLevel>
       </CharacterCard>
       <PresetContainer>
         <PresetAdd>
-          <input
+          <PresetAddInput
             type="text"
             placeholder="캐릭터 명"
             value={characterName}
             onChange={(e) => setCharacterName(e.target.value)}
           />
-          <button type="button" onClick={() => handleSetChar()}>
+          <PresetAddBtn type="button" onClick={() => handleSetChar()}>
             ⬇
-          </button>
+          </PresetAddBtn>
         </PresetAdd>
         <PresetBox>
-          {charData.map((item: CharacterData, index: number) => (
+          {char.map((item: CharacterData, index: number) => (
             <PresetItem
               key={item.chName}
               onClick={() => handleItemClick(index)}
@@ -60,12 +67,12 @@ const CharacterPreset = ({ charData }: { charData: CharacterData[] }) => {
                 {item.chLevel}
                 <PresetCharacterName>{item.chName}</PresetCharacterName>
               </PresetTitle>
-              <PresetDelete>제거</PresetDelete>
+              <PresetDelBtn>제거</PresetDelBtn>
             </PresetItem>
           ))}
         </PresetBox>
       </PresetContainer>
-    </section>
+    </CharacterContainer>
   );
 };
 

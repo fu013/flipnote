@@ -25,4 +25,5 @@ export const userInfoAtom = atom<any>({
 export const isLoggedInAtom = atom({
   key: "isLoggedIn",
   default: false,
+  effects_UNSTABLE: [persistAtom],
 });

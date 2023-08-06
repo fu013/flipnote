@@ -90,6 +90,7 @@ export default function Nav(props: Props) {
     useAuthA.logout(user.mbId, () => {
       setLogIn(false);
       customToast("로그아웃 되었습니다", "success");
+      navigate("/auth/login");
     });
   };
 

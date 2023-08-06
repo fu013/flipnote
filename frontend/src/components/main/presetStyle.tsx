@@ -37,10 +37,6 @@ export const PresetImg = styled.img`
 export const PresetTitle = styled.span`
   display: inline-block;
 `;
-export const PresetDelete = styled.button`
-  display: inline-block;
-  cursor: pointer;
-`;
 export const PresetAdd = styled.div`
   display: flex;
   margin-bottom: 0.5rem;
@@ -52,13 +48,35 @@ export const PresetAdd = styled.div`
 export const PresetCharacterName = styled.span`
   font-weight: 900;
 `;
+export const PresetAddInput = styled.input`
+`;
+export const PresetDelBtn = styled.button`
+  display: inline-block;
+  cursor: pointer;
+`;
+export const PresetAddBtn = styled.button`
+  display: inline-block;
+  cursor: pointer;
+`;
 export const CharacterCard = styled.div`
-  border: 1px solid #0033ff;
-  border-radius: 4px;
+  border: 5px solid #eee;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0 4rem;
 `;
 export const CharacterName = styled.p`
   text-align: center;
+  font-size: 1.5rem;
 `;
 export const CharacterLevel = styled.p`
   text-align: center;
+  font-size: 1.35rem;
+`;
+export const CharacterContainer = styled.section`
+  display: flex;
+`;
+export const CharacterImage = styled.img`
 `;

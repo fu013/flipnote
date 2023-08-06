@@ -15,9 +15,20 @@ export class CharService {
     return this.charRepository.getCharacterInfoByMemberId(mbId);
   }
   public async setCharacter(mbId: string, charName: string) {
-    const image = await this.crawlerService.getCharacterProfileImg(charName);
-    const murung = await this.crawlerService.getCharacterMurung(charName);
-    const level = await this.crawlerService.getCharacterLevel(charName);
-    this.charRepository.setCharacter(mbId, charName, image[0], level[0], murung[0]);
+    try {
+      const image = await this.crawlerService.getCharacterProfileImg(charName);
+      const murung = await this.crawlerService.getCharacterMurung(charName);
+      const level = await this.crawlerService.getCharacterLevel(charName);
+      await this.charRepository.setCharacter(mbId, charName, image[0], level[0], murung[0]);
+      return Object.assign({
+        status: 201,
+        statusText: 'Created',
+        message: "캐릭터 프리셋 추가",
+      });
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+
   }
 }

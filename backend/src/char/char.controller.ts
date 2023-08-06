@@ -24,6 +24,6 @@ export class CharController {
   @Throttle(5000, 3600)
   @UseGuards(AuthGuard('jwt'))
   public async setCharacter(@Request() req, @Body('charName') charName: string) {
-    this.charService.setCharacter(req.user.mbId, charName);
+    return this.charService.setCharacter(req.user.mbId, charName);
   }
 }

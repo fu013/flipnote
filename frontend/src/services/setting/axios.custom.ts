@@ -7,7 +7,6 @@ import customToast from "lib/customToast";
 // JWT 토큰 인증 ON/OFF 공통 Axios 요청훅
 export const useAxiosCustom = (auth: boolean): AxiosInstance => {
   const accessToken = useRecoilValue(accessTokenAtom);
-  console.log("useAxiosCustom 액세스 토큰: " + accessToken);
   const axiosInstance = axios.create({
     baseURL: `${SERVER_URL}/`,
     withCredentials: true,

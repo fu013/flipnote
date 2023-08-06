@@ -6,18 +6,26 @@ import TodoList from "components/main/todoList";
 import TodoPreset from "components/main/todoPreset";
 import RecordLogBox from "components/main/recordLogBox";
 import { CmContainer, CmWrapper } from "style/commonStyled";
-import { useFetchChar } from "services/react-query/character.query";
-import { CharacterData } from "services/interfaces/char.interface";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { useAuth_h } from "services/hooks/auth.hook";
+import { isLoggedInAtom } from "services/recoil/auth";
 
 const App = () => {
-  const { char, char_isLoading }: { char: CharacterData[], char_isLoading: boolean } = useFetchChar();
+  const navigate = useNavigate();
+  const LoggedInAtom = useRecoilValue(isLoggedInAtom);
+  useEffect(() => {
+    if (LoggedInAtom === false) navigate("/auth/login");
+  }, []);
+
   return (
     <div className="App" style={{ fontSize: "2rem" }}>
       <Header />
       <CmContainer>
         <CmWrapper>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <CharacterPreset charData={char} />
+            <CharacterPreset />
             <TodoPreset />
             <RecordLogBox />
           </div>
