@@ -1,5 +1,5 @@
+import axios from "axios";
 import customErrorToast from "lib/customErrorToast";
-import { LoginParams } from "services/interfaces/auth.interface";
 import { useAxiosCustom } from "services/setting/axios.custom";
 
 // character 관련 hook > api
@@ -13,6 +13,7 @@ export const useCharacter_a = () => {
       return res.data;
     } catch (err: any) {
       if (err.response) customErrorToast(err.response.data.statusCode);
+      if (err.message) customErrorToast(err.message);
       console.log(err);
     }
   };
@@ -27,5 +28,19 @@ export const useCharacter_a = () => {
     }
   };
 
-  return { getCharacter, setCharacter };
+  const delCharacter = async (name: string) => {
+    try {
+      const res = await instance.delete("/char/delCharacter", {
+        params: {
+          charName: name
+        }
+      });
+      return res.data;
+    } catch (err: any) {
+      if (err.response) customErrorToast(err.response.data.statusCode);
+      console.log(err);
+    }
+  };
+
+  return { getCharacter, setCharacter, delCharacter };
 };

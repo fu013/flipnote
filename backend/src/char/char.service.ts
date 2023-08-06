@@ -29,6 +29,18 @@ export class CharService {
       this.logger.error(e);
       throw e;
     }
-
+  }
+  public async delCharacter(mbId: string, charName: string) {
+    try {
+      await this.charRepository.delCharacter(mbId, charName);
+      return Object.assign({
+        status: 201,
+        statusText: 'Deleted',
+        message: "캐릭터 프리셋 삭제",
+      });
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 }

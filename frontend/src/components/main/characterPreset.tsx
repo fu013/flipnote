@@ -28,9 +28,14 @@ const CharacterPreset = () => {
   const [activeItem, setActiveItem] = useState(0);
   const useCharH = useChar_h();
   const updateCharMutation = useCharH.useUpdateChar();
+  const deleteCharMutation = useCharH.useDeleteChar();
 
   const handleSetChar = async () => {
     await updateCharMutation.mutateAsync(characterName);
+  };
+
+  const handleDelChar = async (targetCharacterName: string) => {
+    await deleteCharMutation.mutateAsync(targetCharacterName);
   };
 
   const handleItemClick = (index: number) => {
@@ -60,14 +65,14 @@ const CharacterPreset = () => {
           {char.map((item: CharacterData, index: number) => (
             <PresetItem
               key={item.chName}
-              onClick={() => handleItemClick(index)}
               className={activeItem === index ? "active" : ""}
             >
-              <PresetTitle>
+              <PresetTitle
+                onClick={() => handleItemClick(index)}>
                 {item.chLevel}
                 <PresetCharacterName>{item.chName}</PresetCharacterName>
               </PresetTitle>
-              <PresetDelBtn>제거</PresetDelBtn>
+              <PresetDelBtn onClick={() => handleDelChar(item.chName)}>제거</PresetDelBtn>
             </PresetItem>
           ))}
         </PresetBox>

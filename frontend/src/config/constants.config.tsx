@@ -7,13 +7,13 @@
 
 // 전역 Contants 변수 추가(반드시 uppercase로 네이밍)
 export const LOGO: string = "MapleFlipnote"; // 홈페이지 로고명
+export const NODE_ENV: string = "development"; // 모드 설정 (개발: deveploment / 배포: production)
 export const SERVER_URL: string = "http://localhost:29000"; // [THIS] API 서버 END-POINT
 export const CLIENT_URL: string = "http://localhost:28000"; // CLIENT 서버 END-POINT
 export const LOCAL_FRONT_IMG_URL: string = "static/images/";
 export const LOCAL_SERVER_IMG_URL: string = `${SERVER_URL}/uploads`; // 서버 로컬 이미지 저장소 url
 export let ACCESS_TOKEN: string = ""; // JWT CLIENT ACCESS_TOKEN 저장 변수
-export const setAccessToken = (AccessToken: string) => {
-  // 액세스 토큰 세터
+export const setAccessToken = (AccessToken: string) => { // 액세스 토큰 세터
   ACCESS_TOKEN = AccessToken;
 };
 export const ACCESS_TOKEN_EXPIRY: number = 1200000;

@@ -9,6 +9,8 @@ import "static/css/common.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ErrorBoundary from "page/error/ErrorBoundary";
+import ErrorPage from "page/error/errorPage";
 
 // react-query 및 쿼리 로딩 suspense 설정
 const queryClient = new QueryClient({
@@ -45,7 +47,9 @@ ReactDOM.render(
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
           <ToastContainer position="top-center" autoClose={1000} limit={1} />
-          <Router />
+          <ErrorBoundary>
+            <Router />
+          </ErrorBoundary>
         </QueryClientProvider>
       </RecoilRoot>
     </ThemeProvider>

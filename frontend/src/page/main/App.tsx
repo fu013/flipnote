@@ -9,8 +9,8 @@ import { CmContainer, CmWrapper } from "style/commonStyled";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { useAuth_h } from "services/hooks/auth.hook";
 import { isLoggedInAtom } from "services/recoil/auth";
+import { MainTabs } from "./App.style";
 
 const App = () => {
   const navigate = useNavigate();
@@ -18,22 +18,21 @@ const App = () => {
   useEffect(() => {
     if (LoggedInAtom === false) navigate("/auth/login");
   }, []);
-
   return (
-    <div className="App" style={{ fontSize: "2rem" }}>
+    <section className="App" style={{ fontSize: "2rem" }}>
       <Header />
       <CmContainer>
         <CmWrapper>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <MainTabs>
             <CharacterPreset />
             <TodoPreset />
             <RecordLogBox />
-          </div>
+          </MainTabs>
           <TodoList />
         </CmWrapper>
       </CmContainer>
       <Footer />
-    </div>
+    </section>
   );
 }
 

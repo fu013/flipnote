@@ -310,6 +310,10 @@ li {
   list-style: none;
 }
 
+iframe {
+  display: none;
+}
+
 .common-container {
   margin-top: 12rem;
 }

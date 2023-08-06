@@ -10,7 +10,8 @@ export const useChar_h = () => {
     return useMutation((characterName: string) => useCharacterA.setCharacter(characterName),
       {
         onSuccess: async (res) => {
-          if (res.status === 201) queryClient.setQueryData(['char'], await useCharacterA.getCharacter());
+          if (res.status && res.status === 201) queryClient.invalidateQueries(['char']);
+          else throw new Error("Internal Server error");
         },
         onError: (err: any) => {
           console.log(err);
@@ -19,5 +20,19 @@ export const useChar_h = () => {
     );
   };
 
-  return { useUpdateChar };
+  const useDeleteChar = () => {
+    return useMutation((characterName: string) => useCharacterA.delCharacter(characterName),
+      {
+        onSuccess: async (res) => {
+          if (res.status && res.status === 201) queryClient.invalidateQueries(['char']);
+          else throw new Error("Internal Server error");
+        },
+        onError: (err: any) => {
+          console.log(err);
+        },
+      }
+    );
+  };
+
+  return { useUpdateChar, useDeleteChar };
 };

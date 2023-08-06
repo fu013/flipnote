@@ -40,6 +40,30 @@ export class CharRepository extends Repository<Character> {
             await queryRunner.release();
         }
     }
+    async delCharacter(mbId: string, chName: string): Promise<void> {
+        const queryRunner = this.dataSource.createQueryRunner();
+        try {
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
+
+            const character = await queryRunner.manager.findOne(Character, {
+                where: { mbId, chName },
+            });
+
+            if (character) {
+                await queryRunner.manager.remove(character);
+            } else {
+                throw new Error("Character not found.");
+            }
+
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
+        }
+    }
 
     async getCharacterInfoByMemberId(mbId: string): Promise<Character[]> {
         const queryRunner = this.dataSource.createQueryRunner();
