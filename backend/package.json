@@ -45,6 +45,7 @@
     "joi": "^17.9.2",
     "lodash": "^4.17.21",
     "mapped-types": "^0.0.1",
+    "mathjs": "^11.9.1",
     "mysql2": "^3.5.2",
     "nest-winston": "^1.9.3",
     "passport": "^0.6.0",
@@ -53,7 +54,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
-    "winston": "^3.10.0"
+    "winston": "^3.10.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
