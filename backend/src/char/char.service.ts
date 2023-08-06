@@ -11,15 +11,17 @@ export class CharService {
     private readonly crawlerService: CrawlerService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
+
   public async getCharacterInfoByMemberId(mbId: string) {
     return this.charRepository.getCharacterInfoByMemberId(mbId);
   }
-  public async setCharacter(mbId: string, charName: string) {
+
+  public async setCharacter(mbId: string, chName: string) {
     try {
-      const image = await this.crawlerService.getCharacterProfileImg(charName);
-      const murung = await this.crawlerService.getCharacterMurung(charName);
-      const level = await this.crawlerService.getCharacterLevel(charName);
-      await this.charRepository.setCharacter(mbId, charName, image[0], level[0], murung[0]);
+      const image = await this.crawlerService.getCharacterProfileImg(chName);
+      const murung = await this.crawlerService.getCharacterMurung(chName);
+      const level = await this.crawlerService.getCharacterLevel(chName);
+      await this.charRepository.setCharacter(mbId, chName, image[0], level[0], murung[0]);
       return Object.assign({
         status: 201,
         statusText: 'Created',
@@ -30,9 +32,10 @@ export class CharService {
       throw e;
     }
   }
-  public async delCharacter(mbId: string, charName: string) {
+
+  public async delCharacter(mbId: string, chName: string) {
     try {
-      await this.charRepository.delCharacter(mbId, charName);
+      await this.charRepository.delCharacter(mbId, chName);
       return Object.assign({
         status: 201,
         statusText: 'Deleted',

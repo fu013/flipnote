@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, PrimaryColumn, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Member } from './member.entity';
+import { TodoPer } from './todo.per.entity';
 
-@Entity()
-@Index(['mbId', 'chName'])
+@Entity({ name: 'character' })
+@Index(['chName', 'mbId'])
 export class Character {
   @PrimaryColumn({ name: 'mb_id' })
   mbId: string;
@@ -10,7 +11,7 @@ export class Character {
   @PrimaryColumn({ name: 'ch_name' })
   chName: string;
 
-  @Column({ name: 'ch_image', type: 'text', nullable: true })
+  @Column({ name: 'ch_image', nullable: true, type: 'text' })
   chImage: string | null;
 
   @Column({ name: 'ch_level', nullable: true })
@@ -19,25 +20,25 @@ export class Character {
   @Column({ name: 'ch_murung', nullable: true })
   chMurung: string | null;
 
-  @Column({ name: 'daily_count', type: 'int', nullable: true })
-  dailyCount: number | 0;
+  @Column({ name: 'daily_count', default: 0 })
+  dailyCount: number;
 
-  @Column({ name: 'weekly_count', type: 'int', nullable: true })
-  weeklyCount: number | 0;
+  @Column({ name: 'weekly_count', default: 0 })
+  weeklyCount: number;
 
-  @Column({ name: 'monthly_count', type: 'int', nullable: true })
-  monthlyCount: number | 0;
-  0
-  @Column({ name: 'weekly_meso', type: 'bigint', nullable: true })
-  weeklyMeso: number | 0;
+  @Column({ name: 'monthly_count', default: 0 })
+  monthlyCount: number;
 
-  @Column({ name: 'todo_list', type: 'text', nullable: true })
-  todoList: string | null;
+  @Column({ name: 'weekly_meso', default: 0 })
+  weeklyMeso: number;
 
-  @Column({ name: 'created_date', type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  createdDate: Date | null;
+  @Column({ name: 'created_date', default: () => 'CURRENT_TIMESTAMP' })
+  createdDate: Date;
 
   @ManyToOne(() => Member, (member) => member.characters, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'mb_id', referencedColumnName: 'mbId' })
+  @JoinColumn({ name: 'mb_id' })
   member: Member;
+
+  @OneToMany(() => TodoPer, (todoPer) => todoPer.character, { cascade: true })
+  todoPers: TodoPer[];
 }

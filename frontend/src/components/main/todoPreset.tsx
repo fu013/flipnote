@@ -17,6 +17,10 @@ const TodoPreset = () => {
         <PresetAddInput type="text" placeholder="프리셋 명" />
         <PresetAddBtn type="button">⬇</PresetAddBtn>
       </PresetAdd>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ background: "#ddd" }}>고정</div>
+        <div style={{ background: "#f5f5f5" }}>개인</div>
+      </div>
       <PresetBox>
         <PresetItem>
           <PresetImg src={getImgURL("image042.png")}></PresetImg>

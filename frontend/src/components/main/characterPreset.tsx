@@ -1,7 +1,6 @@
 // CharacterPreset.tsx
 import { getImgURL } from "lib/getImgURL";
 import { useState } from "react";
-import { useCharacter_a } from "services/axios/character.axios";
 import { CharacterData } from "services/interfaces/char.interface";
 import {
   PresetAdd,

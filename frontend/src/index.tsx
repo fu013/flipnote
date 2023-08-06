@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RecoilRoot } from "recoil";
 import Loading from "loading";
@@ -10,7 +10,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ErrorBoundary from "page/error/ErrorBoundary";
-import ErrorPage from "page/error/errorPage";
 
 // react-query 및 쿼리 로딩 suspense 설정
 const queryClient = new QueryClient({
@@ -40,8 +39,10 @@ export const theme = createTheme({
     },
   },
 });
-
-ReactDOM.render(
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
   <Suspense fallback={<Loading />}>
     <ThemeProvider theme={theme}>
       <RecoilRoot>
@@ -53,7 +54,6 @@ ReactDOM.render(
         </QueryClientProvider>
       </RecoilRoot>
     </ThemeProvider>
-  </Suspense>,
-  document.querySelector("#root")
+  </Suspense>
 );
 reportWebVitals();

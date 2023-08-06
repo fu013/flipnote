@@ -13,7 +13,6 @@ const Router = () => {
   const isLoggedIn = useRecoilValue(isLoggedInAtom);
   const resetUserInfoAtom = useResetRecoilState(userInfoAtom);
   const resetAccessTokenAtom = useResetRecoilState(accessTokenAtom);
-
   useEffect(() => {
     if (isLoggedIn) { // 로그인 상태 :: setRefresh로 토큰 주기적으로 발급 및 JWT 인증
       setRefresh.mutate();

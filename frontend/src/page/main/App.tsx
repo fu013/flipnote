@@ -14,9 +14,9 @@ import { MainTabs } from "./App.style";
 
 const App = () => {
   const navigate = useNavigate();
-  const LoggedInAtom = useRecoilValue(isLoggedInAtom);
+  const isLoggedIn = useRecoilValue(isLoggedInAtom);
   useEffect(() => {
-    if (LoggedInAtom === false) navigate("/auth/login");
+    if (!isLoggedIn) navigate("/auth/login");
   }, []);
   return (
     <section className="App" style={{ fontSize: "2rem" }}>

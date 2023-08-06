@@ -14,7 +14,7 @@ export class CharController {
   // 캐릭터 관련 특정 서비스(생성, 업데이트 같은 트래픽 유발 기능 관련) 60분, 5000개의 요청으로 제한 (DB Create 기능이므로, 테러에 의한 DB 용량 과부하 방지)
 
   @Get('/getCharacter')
-  @Throttle(1, 10)
+  @Throttle(100, 10)
   @UseGuards(AuthGuard('jwt'))
   public async getCharacter(@Request() req) {
     return this.charService.getCharacterInfoByMemberId(req.user.mbId); // JWT AccessToken 검증된 아이디 === 로그인 아이디
