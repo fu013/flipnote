@@ -1,5 +1,6 @@
 import Footer from "components/common/footer";
 import Header from "components/common/header";
+import CalLocation from "components/etc/CalLocation";
 import { CmContainer, CmWrapper } from "style/commonStyled";
 
 const Etc = () => {
@@ -8,7 +9,7 @@ const Etc = () => {
       <Header />
       <CmContainer>
         <CmWrapper>
-          JSON 생성기
+          <CalLocation />
         </CmWrapper>
       </CmContainer>
       <Footer />

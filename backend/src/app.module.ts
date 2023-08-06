@@ -14,11 +14,13 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { CharModule } from './char/char.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import path from 'path';
+import { ExcelModule } from './excel/excel.module';
 
 /* NESTJS에서 앱은 여러개의 모듈로 구성되어있음 */
 @Module({
   imports: [
     AuthModule,
+    ExcelModule,
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '../static'),
     }),

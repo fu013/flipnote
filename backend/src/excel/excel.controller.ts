@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { ExcelService } from './excel.service';
@@ -21,7 +21,7 @@ interface ExcelData {
 export class ExcelController {
   constructor(private readonly excelService: ExcelService) { }
 
-  @Post('upload')
+  @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file) {
     try {
