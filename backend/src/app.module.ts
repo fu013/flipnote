@@ -24,7 +24,8 @@ import { ExcelModule } from './excel/excel.module';
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '../static'),
     }),
-    ThrottlerModule.forRoot({ // default는 300초(5분)당 1000번의 요청 허용
+    ThrottlerModule.forRoot({
+      // default는 300초(5분)당 1000번의 요청 허용
       ignoreUserAgents: [
         // 구글 봇을 통한 요청 무시(테러 방지), 하지만 google검색에 내 사이트에 검색이 되지않을수도 있으니 유의
         /googlebot/gi,
@@ -52,7 +53,7 @@ import { ExcelModule } from './excel/excel.module';
       } */
       transports: [
         new winston.transports.Console({
-          level: NODE_ENV === 'production' ? 'info' : 'silly',
+          level: NODE_ENV === 'development' ? 'info' : 'silly',
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),
@@ -78,4 +79,4 @@ import { ExcelModule } from './excel/excel.module';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

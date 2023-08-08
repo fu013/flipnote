@@ -17,9 +17,29 @@ import {
   CharacterImage,
   PresetAddInput,
   PresetAddBtn,
+  PresetImg,
+  ListCharImage,
 } from "./presetStyle";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useFetchChar } from "services/react-query/character.query";
 import { useChar_h } from "services/hooks/char.hook";
+import styled from "@emotion/styled";
+
+const StyledListItem = styled(ListItem)`
+  &.active {
+    background: #198df2;
+    color: #fff;
+  }
+`;
+const StyledAvatar = styled(Avatar)`
+  background: #f1f1f1;
+`;
 
 const CharacterPreset = () => {
   const { char, char_isLoading } = useFetchChar();
@@ -44,7 +64,10 @@ const CharacterPreset = () => {
   return (
     <CharacterContainer>
       <CharacterCard>
-        <CharacterImage src={char[activeItem]?.chImage || getImgURL("default.png")} alt="character Profile Image" />
+        <CharacterImage
+          src={char[activeItem]?.chImage || getImgURL("default.png")}
+          alt="character Profile Image"
+        />
         <CharacterName>{char[activeItem]?.chName || "미생성"}</CharacterName>
         <CharacterLevel>{char[activeItem]?.chLevel || "Lv. 1"} </CharacterLevel>
       </CharacterCard>
@@ -61,19 +84,28 @@ const CharacterPreset = () => {
           </PresetAddBtn>
         </PresetAdd>
         <PresetBox>
-          {char.map((item: CharacterData, index: number) => (
-            <PresetItem
-              key={item.chName}
-              className={activeItem === index ? "active" : ""}
-            >
-              <PresetTitle
-                onClick={() => handleItemClick(index)}>
+          <List>
+            {char.map((item: CharacterData, index: number) => (
+              <StyledListItem
+                key={item.chName}
+                className={activeItem === index ? "active" : ""}
+                onClick={() => handleItemClick(index)}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete">
+                    <DeleteIcon onClick={() => handleDelChar(item.chName)} />
+                  </IconButton>
+                }
+              >
+                <ListItemAvatar>
+                  <StyledAvatar>
+                    <ListCharImage src={item.chImage} alt="없음" />
+                  </StyledAvatar>
+                </ListItemAvatar>
                 {item.chLevel}
-                <PresetCharacterName>{item.chName}</PresetCharacterName>
-              </PresetTitle>
-              <PresetDelBtn onClick={() => handleDelChar(item.chName)}>제거</PresetDelBtn>
-            </PresetItem>
-          ))}
+                <ListItemText primary={item.chName} />
+              </StyledListItem>
+            ))}
+          </List>
         </PresetBox>
       </PresetContainer>
     </CharacterContainer>

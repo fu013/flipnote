@@ -16,121 +16,152 @@
   color: #0044ff;
 }
 
+::-webkit-scrollbar {
+  width: 10px; /* 스크롤바 너비 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* 스크롤바 색상 */
+  border-radius: 5px; /* 스크롤바 모서리를 둥글게 */
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* 스크롤바 트랙 배경색 */
+  border-radius: 5px; /* 스크롤바 트랙 모서리를 둥글게 */
+}
+
 @font-face {
   font-family: "SUIT-ExtraLight";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-ExtraLight.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-ExtraLight.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SUIT-Light";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Light.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Light.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SUIT-Regular";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SUIT-Medium";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Medium.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Medium.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SUIT-Bold";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Bold.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Bold.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SUIT-Heavy";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Heavy.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Heavy.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SuncheonB";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/SuncheonB.woff") format("woff");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/SuncheonB.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "GongGothicMedium";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "GongGothicLight";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicLight.woff") format("woff");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicLight.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Pretendard-Regular";
-  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoUL";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoUL.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoUL.ttf")
+    format("ttf");
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoL";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoL.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoL.ttf")
+    format("ttf");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoR";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoR.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoR.ttf")
+    format("ttf");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoM";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoM.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoM.ttf")
+    format("ttf");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoEB";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoEB.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoEB.ttf")
+    format("ttf");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoSB";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoSB.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoSB.ttf")
+    format("ttf");
   font-weight: 800;
   font-style: normal;
 }
 
 @font-face {
   font-family: "AppleSDGothicNeoB";
-  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoB.ttf") format("ttf");
+  src: url("static/fonts/Apple_산돌고딕_Neo/AppleSDGothicNeoB.ttf")
+    format("ttf");
   font-weight: 900;
   font-style: normal;
 }

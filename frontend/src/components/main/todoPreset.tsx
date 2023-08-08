@@ -1,3 +1,4 @@
+import React from "react";
 import { getImgURL } from "lib/getImgURL";
 import {
   PresetContainer,
@@ -8,8 +9,25 @@ import {
   PresetTitle,
   PresetImg,
   PresetAddInput,
-  PresetAddBtn
+  PresetAddBtn,
 } from "./presetStyle";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import FolderIcon from "@mui/icons-material/Folder";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+function generate(element: React.ReactElement) {
+  return [0, 1, 2].map((value) =>
+    React.cloneElement(element, {
+      key: value,
+    })
+  );
+}
+
 const TodoPreset = () => {
   return (
     <PresetContainer>
@@ -17,7 +35,13 @@ const TodoPreset = () => {
         <PresetAddInput type="text" placeholder="프리셋 명" />
         <PresetAddBtn type="button">⬇</PresetAddBtn>
       </PresetAdd>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <div style={{ background: "#ddd" }}>고정</div>
         <div style={{ background: "#f5f5f5" }}>개인</div>
       </div>
@@ -52,6 +76,24 @@ const TodoPreset = () => {
           <PresetTitle>에스페라 심볼</PresetTitle>
           <PresetDelBtn>제거</PresetDelBtn>
         </PresetItem>
+        <List>
+          {generate(
+            <ListItem
+              secondaryAction={
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              }
+            >
+              <ListItemAvatar>
+                <Avatar>
+                  <PresetImg src={getImgURL("image052.png")}></PresetImg>
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="Single-line item" />
+            </ListItem>
+          )}
+        </List>
       </PresetBox>
     </PresetContainer>
   );

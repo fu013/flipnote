@@ -7,14 +7,17 @@ export const PresetContainer = styled.div`
   }
 `;
 export const PresetBox = styled.div`
-  border: 1px solid #0033ff;
+  border: 3px solid #ddd;
   padding: 1rem;
   border-radius: 4px;
   font-size: 1.2rem;
   font-family: "Noto Sans", sans-serif;
-  overflow-y: scroll;
-  min-width: 20rem;
+  overflow-y: auto;
+  min-width: 33rem;
   height: 22.1rem;
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
 `;
 export const PresetItem = styled.div`
   display: flex;
@@ -48,8 +51,7 @@ export const PresetAdd = styled.div`
 export const PresetCharacterName = styled.span`
   font-weight: 900;
 `;
-export const PresetAddInput = styled.input`
-`;
+export const PresetAddInput = styled.input``;
 export const PresetDelBtn = styled.button`
   display: inline-block;
   cursor: pointer;
@@ -66,6 +68,7 @@ export const CharacterCard = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 0 4rem;
+  min-width: 20rem;
 `;
 export const CharacterName = styled.p`
   text-align: center;
@@ -78,5 +81,8 @@ export const CharacterLevel = styled.p`
 export const CharacterContainer = styled.section`
   display: flex;
 `;
-export const CharacterImage = styled.img`
+export const CharacterImage = styled.img``;
+
+export const ListCharImage = styled.img`
+  max-width: 100%;
 `;
