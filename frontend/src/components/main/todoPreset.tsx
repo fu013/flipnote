@@ -44,6 +44,7 @@ const TodoPreset = () => {
       >
         <div style={{ background: "#ddd" }}>고정</div>
         <div style={{ background: "#f5f5f5" }}>개인</div>
+        <div style={{ background: "#f5f5f5" }}>로그</div>
       </div>
       <PresetBox>
         <PresetItem>

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useState, SyntheticEvent } from "react";
+import { ReactNode } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -15,8 +15,6 @@ import { useRecoilState } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -50,7 +48,6 @@ export const TodoList = () => {
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
-  const [value, setValue] = useState(0);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -71,11 +68,6 @@ export const TodoList = () => {
       newChecked.splice(currentIndex, 1);
     }
     setChecked(newChecked);
-  };
-
-  // Tab Value Change
-  const handleChange = (event: SyntheticEvent, newValue: number) => {
-    setValue(newValue);
   };
 
   // 체크 개수 개수하기
@@ -136,8 +128,8 @@ export const TodoList = () => {
       <Divider />
       <List
         sx={{
-          width: 650,
-          height: 600,
+          width: 550,
+          height: 500,
           bgcolor: "background.paper",
           overflow: "auto",
           "& *": {
@@ -157,6 +149,7 @@ export const TodoList = () => {
               key={item.id}
               role="listitem"
               onClick={handleToggle(item.id)}
+              sx={{ borderBottom: "1px solid #ddd" }}
             >
               <ListItemIcon sx={{ minWidth: "auto !important" }}>
                 <Checkbox
@@ -183,23 +176,11 @@ export const TodoList = () => {
 
   return (
     <div>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        aria-label="icon label tabs example"
-        sx={{
-          marginBottom: "2rem",
-          marginTop: "3rem",
-          "& *": {
-            fontFamily: "Noto Sans, sans-serif !important",
-            fontSize: "1.5rem !important",
-          },
-        }}
-      >
-        <Tab label="일간" />
-        <Tab label="주간" />
-        <Tab label="월간" />
-      </Tabs>
+      <div>
+        <h5>새 프리셋</h5>
+        <input type="text" />
+        <button>추가</button>
+      </div>
       <Grid
         container
         spacing={2}

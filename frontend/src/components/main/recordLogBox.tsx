@@ -9,7 +9,7 @@ const RecordLogBox = () => {
     width: 100%;
     height: 25rem;
     font-size: 1.2rem;
-    overflow-y: scroll;
+    overflow-y: auto;
   `;
   return (
     <LogBox>
