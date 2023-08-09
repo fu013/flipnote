@@ -86,3 +86,21 @@ export const CharacterImage = styled.img``;
 export const ListCharImage = styled.img`
   max-width: 100%;
 `;
+
+export const ListItemContent = styled.div`
+  display: flex;
+`;
+
+export const GridBox = styled.div``;
+
+export const TypeTag = styled.span`
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px 5px;
+  background: #ddd;
+  color: #333;
+  font-size: 1.2rem !important;
+  border-radius: 25px;
+`;
+
+export const ListItemOption = styled.div``;

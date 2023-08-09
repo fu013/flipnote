@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ReactDOM from 'react-dom/client';
+import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RecoilRoot } from "recoil";
 import Loading from "loading";
@@ -39,8 +39,11 @@ export const theme = createTheme({
     },
   },
 });
+// background: rgba(32,33,35,1);
+// background: rgba(52,53,65,1);
+
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <Suspense fallback={<Loading />}>
