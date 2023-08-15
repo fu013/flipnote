@@ -13,11 +13,11 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
+import { GridBox, TypeTag } from "./presetStyle";
 import {
-  GridBox,
-  TypeTag,
-} from "./presetStyle";
-import { useFetchTodo, useFetchTodoComplete } from "services/react-query/todo.query";
+  useFetchTodo,
+  useFetchTodoComplete,
+} from "services/react-query/todo.query";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { presetTypeAtom } from "services/recoil/presetType";
 import { useTodo_h } from "services/hooks/todo.hook";
@@ -81,20 +81,25 @@ export const TodoList = () => {
   const useTodoH = useTodo_h();
   const useUpdateTodo = useTodoH.useUpdateTodo();
 
-  const filterTodo = (array: ListItemInfo[], charName: string, presetType: string | number) => {
-    return array.filter((item) => item.chName === charName && item.todoType === presetType.toString());
+  const filterTodo = (
+    array: ListItemInfo[],
+    charName: string,
+    presetType: string | number
+  ) => {
+    return array.filter(
+      (item) =>
+        item.chName === charName && item.todoType === presetType.toString()
+    );
   };
 
   useEffect(() => {
-    if (!todo_isLoading) {
+    if (!todo_isLoading && !todo_c_isLoading) {
       const filteredTodo = filterTodo(todo, charName, presetType);
       const filteredTodoCompleted = filterTodo(todo_c, charName, presetType);
       setLeft(filteredTodo);
       setRight(filteredTodoCompleted);
     }
-  }, [charName, presetType, todo, todo_isLoading]);
-
-
+  }, [charName, presetType, todo, todo_c, todo_isLoading, todo_c_isLoading]);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -144,7 +149,6 @@ export const TodoList = () => {
     setChecked(not(checked, rightChecked));
   };
 
-
   const handleOpenPresetModal = () => {
     setPresetModalOpen(true);
   };
@@ -180,8 +184,8 @@ export const TodoList = () => {
             }}
             sx={{
               "& svg": {
-                fontSize: "3rem !important"
-              }
+                fontSize: "3rem !important",
+              },
             }}
           />
         }
@@ -212,11 +216,15 @@ export const TodoList = () => {
               role="listitem"
               onClick={handleToggle(item.todoId)}
               style={{ borderBottom: "1px solid #ddd" }}
-              checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1} // 체크 상태를 전달
+              checked={
+                checked.findIndex((c) => c.todoId === item.todoId) !== -1
+              } // 체크 상태를 전달
             >
               <ListItemIcon sx={{ minWidth: "auto !important" }}>
                 <Checkbox
-                  checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
+                  checked={
+                    checked.findIndex((c) => c.todoId === item.todoId) !== -1
+                  }
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
@@ -245,7 +253,12 @@ export const TodoList = () => {
           <Button variant="contained" onClick={handleOpenPresetModal}>
             새 프리셋 등록
           </Button>
-          <SimpleModal open={presetModalOpen} onClose={handleClosePresetModal} />
+          <SimpleModal
+            open={presetModalOpen}
+            onClose={handleClosePresetModal}
+            todo={todo}
+            todo_c={todo_c}
+          />
         </div>
       </div>
       <Grid
@@ -278,7 +291,14 @@ export const TodoList = () => {
             >
               &lt;
             </Button>
-            <Button variant="contained" onClick={() => useUpdateTodo.mutateAsync({ "left": left, "right": right })}>내역 저장</Button>
+            <Button
+              variant="contained"
+              onClick={() =>
+                useUpdateTodo.mutateAsync({ left: left, right: right })
+              }
+            >
+              내역 저장
+            </Button>
           </Grid>
         </Grid>
         <Grid item>{customList("숙제 완료 내역", right)}</Grid>
