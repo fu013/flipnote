@@ -196,31 +196,7 @@ export const TodoList = () => {
               style={{ borderBottom: "1px solid #ddd" }}
               checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1} // 체크 상태를 전달
             >
-              <ListItemContent>
-                <ListItemIcon sx={{ minWidth: "auto !important" }}>
-                  <Checkbox
-                    checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{
-                      "aria-labelledby": labelId,
-                    }}
-                  />
-                </ListItemIcon>
 
-                {/* <img
-                  src={getImgURL(item.image)}
-                  alt={`Image ${item.id}`}
-                  style={{ marginRight: "1rem" }}
-                /> */}
-                <ListItemText id={labelId} primary={item.name} />
-              </ListItemContent>
-              <ListItemOption>
-                <TypeTag>기본</TypeTag>
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemOption>
               <ListItemIcon sx={{ minWidth: "auto !important" }}>
                 <Checkbox
                   checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
@@ -238,6 +214,12 @@ export const TodoList = () => {
                 style={{ marginRight: "1rem" }}
               />
               <ListItemText id={labelId} primary={item.todoName} />
+              <ListItemOption>
+                <TypeTag>기본</TypeTag>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemOption>
             </CustomListItem>
           );
         })}

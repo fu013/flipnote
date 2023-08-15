@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Request, Inject, Delete, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Inject } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -16,6 +16,6 @@ export class TodoController {
   @Throttle(100, 10)
   @UseGuards(AuthGuard('jwt'))
   public async getTodoPer(@Request() req) {
-    return this.todoService.getTodoPer(req.user.mbId);
+    return this.todoService.getFilteredTodoList(req.user.mbId);
   }
 }

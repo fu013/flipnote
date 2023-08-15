@@ -10,7 +10,7 @@ export class TodoService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
 
-  public async getTodoPer(mbId: string) {
-    return this.todoPrivateRepository.getTodoPerByMbIdAndChName(mbId);
+  public async getFilteredTodoList(mbId: string) {
+    return this.todoPrivateRepository.getFilteredTodoList(mbId);
   }
 }
