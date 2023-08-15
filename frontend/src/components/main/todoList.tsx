@@ -24,9 +24,9 @@ import { useFetchTodo, useFetchTodoComplete } from "services/react-query/todo.qu
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { presetTypeAtom } from "services/recoil/presetType";
 import { userInfoAtom } from "services/recoil/auth";
-import { v4 as uuidv4 } from "uuid";
+
 import { useTodo_h } from "services/hooks/todo.hook";
-import { nowDate } from "lib/getNowDate";
+import SimpleModal from "components/modal/newPreset.modal";
 import { getImgURL } from "lib/getImgURL";
 
 /* 스타일 */
@@ -76,14 +76,13 @@ const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
 
 export const TodoList = () => {
   const charName = useRecoilValue(charActiveNameAtom);
-  const mbId = useRecoilValue(userInfoAtom);
   const presetType = useRecoilValue(presetTypeAtom);
   const { todo, todo_isLoading } = useFetchTodo();
   const { todo_c, todo_c_isLoading } = useFetchTodoComplete();
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
-  const [newPresetTitle, setNewPresetTitle] = useState("");
+  const [presetModalOpen, setPresetModalOpen] = useState(false);
   const useTodoH = useTodo_h();
   const useUpdateTodo = useTodoH.useUpdateTodo();
 
@@ -100,7 +99,7 @@ export const TodoList = () => {
       setLeft(filteredTodo);
       setRight(filteredTodoCompleted);
     }
-  }, [charName, presetType, todo_isLoading]);
+  }, [charName, presetType, todo, todo_isLoading]);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -150,22 +149,13 @@ export const TodoList = () => {
     setChecked(not(checked, rightChecked));
   };
 
-  // 프리셋 추가
-  const handleAddPreset = () => {
-    if (newPresetTitle.trim() === '') {
-      return;
-    }
-    const newPreset: ListItemInfo = {
-      todoId: uuidv4(),
-      todoName: newPresetTitle,
-      todoType: presetType.toString(),
-      todoImage: '',
-      mbId: mbId,
-      chName: charName,
-      createdDate: nowDate(),
-    };
-    setLeft([...left, newPreset]);
-    setNewPresetTitle('');
+
+  const handleOpenPresetModal = () => {
+    setPresetModalOpen(true);
+  };
+
+  const handleClosePresetModal = () => {
+    setPresetModalOpen(false);
   };
 
   const customList = (title: ReactNode, items: readonly ListItemInfo[]) => (
@@ -262,13 +252,12 @@ export const TodoList = () => {
   return (
     <CustomGridBox>
       <div style={{ transform: "translateY(-50%)" }}>
-        <input type="text"
-          value={newPresetTitle}
-          onChange={(e) => setNewPresetTitle(e.target.value)}
-          placeholder="새 프리셋 추가"
-        />
-        <Button variant="contained" onClick={handleAddPreset}>추가</Button>
-        <Button variant="contained">모달창</Button>
+        <div>
+          <Button variant="contained" onClick={handleOpenPresetModal}>
+            새 프리셋 등록
+          </Button>
+          <SimpleModal open={presetModalOpen} onClose={handleClosePresetModal} />
+        </div>
       </div>
       <Grid
         container

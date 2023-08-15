@@ -10,7 +10,6 @@ import { useAuth_a } from "services/axios/auth.axios";
 import { LoginParams } from "services/interfaces/auth.interface";
 import customToast from "lib/customToast";
 
-// authorization 관련 hook
 export const useAuth_h = () => {
   const setAccessTokenAtom = useSetRecoilState(accessTokenAtom);
   const setUserInfoAtom = useSetRecoilState(userInfoAtom);

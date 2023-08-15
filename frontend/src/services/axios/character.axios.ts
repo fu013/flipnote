@@ -9,8 +9,8 @@ export const useCharacter_a = () => {
       const res = await instance.get("/char/getCharacter");
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };
@@ -20,8 +20,8 @@ export const useCharacter_a = () => {
       const res = await instance.post("/char/setCharacter", { charName: name });
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };
@@ -35,8 +35,8 @@ export const useCharacter_a = () => {
       });
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };

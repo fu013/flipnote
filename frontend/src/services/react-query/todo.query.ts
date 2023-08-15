@@ -6,7 +6,7 @@ const QUERY_KEY = {
   todo_c: "todo_c",
 };
 
-// 캐싱 :: 할일 목록
+// 캐싱 :: 할일 프리셋 목록
 export const useFetchTodo = () => {
   const myAxios = useTodo_a();
 
@@ -23,6 +23,7 @@ export const useFetchTodo = () => {
   };
 };
 
+// 캐싱 :: 할일 완료 목록
 export const useFetchTodoComplete = () => {
   const myAxios = useTodo_a();
 

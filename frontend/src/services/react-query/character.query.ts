@@ -13,7 +13,7 @@ axios 요청에서 응답에 return을 누락하면 해당 비동기 함수는 u
 자동 갱신을 하지 않는다. react-query를 사용할땐 delete, update, insert등을 하고나서 서버로부터 꼭 응답 메세지를 받도록 한다.
 */
 
-// 캐싱 :: 캐릭터 목록
+// 캐싱 :: 캐릭터 프리셋 목록
 export const useFetchChar = () => {
   const myAxios = useCharacter_a();
   const { data, isLoading } = useQuery([QUERY_KEY.char], () => myAxios.getCharacter());

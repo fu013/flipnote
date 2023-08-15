@@ -12,8 +12,8 @@ export const useAuth_a = () => {
       const res = await instance.post("/auth/login", params);
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };
@@ -26,8 +26,8 @@ export const useAuth_a = () => {
       callback();
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };
@@ -40,8 +40,8 @@ export const useAuth_a = () => {
       });
       return res.data;
     } catch (err: any) {
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.log(err);
     }
   };
@@ -54,8 +54,8 @@ export const useAuth_a = () => {
     } catch (err: any) {
       document.cookie = `isAccess=;max-age=${"0"}`;
       clearInterval(REFRESH_TOKEN_INTERVAL);
-      if (err.response) customErrorToast(err.response.data.statusCode);
-      if (err.message) customErrorToast(err.message);
+      err.response ? customErrorToast(err.response.data.statusCode) : false;
+      err.message ? customErrorToast(err.message) : false;
       console.error(err);
     }
   };
