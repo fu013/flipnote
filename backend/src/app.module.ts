@@ -15,6 +15,7 @@ import { CharModule } from './char/char.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import path from 'path';
 import { ExcelModule } from './excel/excel.module';
+import { TodoModule } from './todo/todo.module';
 
 /* NESTJS에서 앱은 여러개의 모듈로 구성되어있음 */
 @Module({
@@ -75,6 +76,7 @@ import { ExcelModule } from './excel/excel.module';
     }),
     CrawlerModule,
     CharModule,
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryColumn, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, Index, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Member } from './member.entity';
-import { TodoPer } from './todo.per.entity';
+import { TodoComplete } from './todo.complete.entity';
+import { TodoPrivate } from './todo.private.entity';
 
 @Entity({ name: 'character' })
-@Index(['chName', 'mbId'])
+@Index('char_index', ['chName', 'mbId'])
 export class Character {
   @PrimaryColumn({ name: 'mb_id' })
   mbId: string;
@@ -11,34 +12,37 @@ export class Character {
   @PrimaryColumn({ name: 'ch_name' })
   chName: string;
 
-  @Column({ name: 'ch_image', nullable: true, type: 'text' })
-  chImage: string | null;
+  @Column({ name: 'ch_image', type: "text", nullable: false })
+  chImage: string;
 
   @Column({ name: 'ch_level', nullable: true })
-  chLevel: string | null;
+  chLevel: string;
 
   @Column({ name: 'ch_murung', nullable: true })
-  chMurung: string | null;
+  chMurung: string;
 
-  @Column({ name: 'daily_count', default: 0 })
+  @Column({ name: 'daily_count', nullable: true, default: 0 })
   dailyCount: number;
 
-  @Column({ name: 'weekly_count', default: 0 })
+  @Column({ name: 'weekly_count', nullable: true, default: 0 })
   weeklyCount: number;
 
-  @Column({ name: 'monthly_count', default: 0 })
+  @Column({ name: 'monthly_count', nullable: true, default: 0 })
   monthlyCount: number;
 
-  @Column({ name: 'weekly_meso', default: 0 })
+  @Column({ name: 'weekly_meso', nullable: true, default: 0 })
   weeklyMeso: number;
 
   @Column({ name: 'created_date', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 
-  @ManyToOne(() => Member, (member) => member.characters, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'mb_id' })
+  @ManyToOne(() => Member, (member) => member.characters)
+  @JoinColumn({ name: 'mb_id', referencedColumnName: 'mbId' })
   member: Member;
 
-  @OneToMany(() => TodoPer, (todoPer) => todoPer.character, { cascade: true })
-  todoPers: TodoPer[];
+  @OneToMany(() => TodoPrivate, (todoPrivate) => todoPrivate.character)
+  todoPrivates: TodoPrivate[];
+
+  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.character)
+  todoCompletes: TodoComplete[];
 }

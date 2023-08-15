@@ -3,8 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { Character } from 'src/entity/character.entity';
 import { Member } from 'src/entity/member.entity';
-import { Todo } from 'src/entity/todo.entity';
-import { TodoPer } from 'src/entity/todo.per.entity';
+import { TodoComplete } from 'src/entity/todo.complete.entity';
+import { TodoPublic } from 'src/entity/todo.public.entity';
+import { TodoPrivate } from 'src/entity/todo.private.entity';
 import {
   MYSQL_DB_HOST,
   MYSQL_DB_NAME,
@@ -25,7 +26,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: MYSQL_DB_PW,
       database: MYSQL_DB_NAME,
       synchronize: MYSQL_DB_Synch, // development: true, production: false
-      entities: [Member, Character, Todo, TodoPer],
+      entities: [Member, Character, TodoPublic, TodoPrivate, TodoComplete],
     };
   }
 }
