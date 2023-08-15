@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -2,
-    "scrollLeft": 0,
-    "zoomLevel": 1,
+    "scrollTop": -183,
+    "scrollLeft": -110,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -166,7 +166,7 @@
           "active": false,
           "left": 455,
           "top": 38,
-          "zIndex": 46,
+          "zIndex": 69,
           "widthName": 60,
           "widthComment": 60
         },
@@ -232,7 +232,7 @@
               "autoIncrement": false,
               "primaryKey": true,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -409,10 +409,10 @@
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 92,
           "top": 336,
-          "zIndex": 47,
+          "zIndex": 119,
           "widthName": 60,
           "widthComment": 60
         },
@@ -420,8 +420,8 @@
         "id": "25e7daa5-2818-4b38-ba7d-08aa57e24645"
       },
       {
-        "name": "todo",
-        "comment": "투두 리스트(전체 공통)",
+        "name": "todo_public",
+        "comment": "투두 리스트(공통)",
         "columns": [
           {
             "name": "todo_id",
@@ -495,7 +495,7 @@
           {
             "name": "todo_type",
             "comment": "투두 타입: d: 매일, w1: 주(월), w2: 주(목) m: 달(1일)",
-            "dataType": "VARCHAR(255)",
+            "dataType": "CHAR(1)",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -510,7 +510,7 @@
               "pfk": false,
               "widthName": 60.96337890625,
               "widthComment": 120,
-              "widthDataType": 89.29296875,
+              "widthDataType": 60,
               "widthDefault": 60
             },
             "id": "da764f03-e89e-4124-a210-81b83f6c4518"
@@ -541,17 +541,17 @@
         ],
         "ui": {
           "active": false,
-          "left": 89,
-          "top": 658,
-          "zIndex": 44,
-          "widthName": 60,
-          "widthComment": 120
+          "left": 102.75,
+          "top": 645.5,
+          "zIndex": 112,
+          "widthName": 70.986328125,
+          "widthComment": 105.4921875
         },
         "visible": true,
         "id": "d8512120-ffbc-4711-97de-24ca38723716"
       },
       {
-        "name": "todo_per",
+        "name": "todo_private",
         "comment": "투두 리스트(개인)",
         "columns": [
           {
@@ -672,7 +672,7 @@
           {
             "name": "todo_type",
             "comment": "투두 타입: d: 매일, w1: 주(월), w2: 주(목) m: 달(1일)",
-            "dataType": "VARCHAR(255)",
+            "dataType": "CHAR(1)",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -687,7 +687,7 @@
               "pfk": false,
               "widthName": 60.96337890625,
               "widthComment": 120,
-              "widthDataType": 89.29296875,
+              "widthDataType": 60,
               "widthDefault": 60
             },
             "id": "46eb1af7-b9d1-43ce-8d04-1a2d74af7315"
@@ -718,14 +718,214 @@
         ],
         "ui": {
           "active": false,
-          "left": 747,
-          "top": 617,
-          "zIndex": 41,
-          "widthName": 60,
+          "left": 790.75,
+          "top": 338.25,
+          "zIndex": 114,
+          "widthName": 75.0869140625,
           "widthComment": 105.4921875
         },
         "visible": true,
         "id": "836f382f-9a17-4c8a-8274-3521537ce01e"
+      },
+      {
+        "name": "todo_complete",
+        "comment": "투두 리스트(완료)",
+        "columns": [
+          {
+            "name": "mb_id",
+            "comment": "회원 아이디",
+            "dataType": "VARCHAR(255)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 71.5703125,
+              "widthDataType": 89.29296875,
+              "widthDefault": 60
+            },
+            "id": "7833d7d3-3f87-4244-ad80-c3a7492fb5f4"
+          },
+          {
+            "name": "ch_name",
+            "comment": "캐릭터명",
+            "dataType": "VARCHAR(255)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 89.29296875,
+              "widthDefault": 60
+            },
+            "id": "67acf8f3-6e8b-40fd-92ef-8f991ae37da4"
+          },
+          {
+            "name": "todo_id",
+            "comment": "투두 기본키",
+            "dataType": "INT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": true,
+              "widthName": 60,
+              "widthComment": 71.5703125,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "29f18c58-cbc8-41d3-b2c9-d0322e759305"
+          },
+          {
+            "name": "todo_name",
+            "comment": "투두명",
+            "dataType": "VARCHAR(255)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.98388671875,
+              "widthComment": 60,
+              "widthDataType": 89.29296875,
+              "widthDefault": 60
+            },
+            "id": "6400c651-2b0f-4791-aad5-5a99a0ea9b02"
+          },
+          {
+            "name": "todo_image",
+            "comment": "투두아이콘 이미지경로",
+            "dataType": "VARCHAR(255)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 71.494140625,
+              "widthComment": 120,
+              "widthDataType": 89.29296875,
+              "widthDefault": 60
+            },
+            "id": "8527c6bc-3763-4b62-9817-18829a751b35"
+          },
+          {
+            "name": "todo_type",
+            "comment": "투두 타입: d: 매일, w1: 주(월), w2: 주(목) m: 달(1일)",
+            "dataType": "CHAR(1)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60.96337890625,
+              "widthComment": 120,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "f6d45eee-d9a1-402d-a7be-2bd9168cf25a"
+          },
+          {
+            "name": "completed_date",
+            "comment": "완료 일자",
+            "dataType": "DATETIME",
+            "default": "CURRENT_TIMESTAMP",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 95.9453125,
+              "widthComment": 60,
+              "widthDataType": 61.42041015625,
+              "widthDefault": 134.31689453125
+            },
+            "id": "1f74d4b6-edb4-46dc-a389-bfe57d1b3037"
+          },
+          {
+            "name": "todo_name",
+            "comment": "투두명",
+            "dataType": "VARCHAR(255)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 67.98388671875,
+              "widthComment": 60,
+              "widthDataType": 89.29296875,
+              "widthDefault": 60
+            },
+            "id": "6aaec7cb-c36b-41df-8e2e-d7ec70756ab2"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 782.25,
+          "top": 635,
+          "zIndex": 115,
+          "widthName": 89.978515625,
+          "widthComment": 105.4921875
+        },
+        "visible": true,
+        "id": "08ba98d2-94c2-446e-9da6-4c80011ba041"
       }
     ],
     "indexes": [
@@ -746,7 +946,7 @@
         "tableId": "25e7daa5-2818-4b38-ba7d-08aa57e24645"
       },
       {
-        "name": "todo_index",
+        "name": "todo_public_index",
         "columns": [
           {
             "id": "b2bb5244-a583-4e69-ab0a-c8c2588f0bd8",
@@ -758,7 +958,7 @@
         "tableId": "d8512120-ffbc-4711-97de-24ca38723716"
       },
       {
-        "name": "todo_per_index",
+        "name": "todo_private_index",
         "columns": [
           {
             "id": "bac4ee4e-e0df-4823-bd91-83fd6f134599",
@@ -788,6 +988,26 @@
         "unique": true,
         "id": "6562612c-6d40-4008-af05-cf688a2ab5a4",
         "tableId": "2a91a37a-997f-486e-acc5-663bae23d868"
+      },
+      {
+        "name": "todo_complete_index",
+        "columns": [
+          {
+            "id": "7833d7d3-3f87-4244-ad80-c3a7492fb5f4",
+            "orderType": "ASC"
+          },
+          {
+            "id": "67acf8f3-6e8b-40fd-92ef-8f991ae37da4",
+            "orderType": "ASC"
+          },
+          {
+            "id": "6400c651-2b0f-4791-aad5-5a99a0ea9b02",
+            "orderType": "ASC"
+          }
+        ],
+        "unique": false,
+        "id": "94ff6f90-143b-4548-9bb1-da820f2e6610",
+        "tableId": "08ba98d2-94c2-446e-9da6-4c80011ba041"
       }
     ]
   },
@@ -844,17 +1064,17 @@
           "columnIds": [
             "1937d19d-ff6c-40a1-8552-2027d39f5cb4"
           ],
-          "x": 759.142333984375,
-          "y": 209.5,
-          "direction": "bottom"
+          "x": 1063.28466796875,
+          "y": 123.75,
+          "direction": "right"
         },
         "end": {
           "tableId": "836f382f-9a17-4c8a-8274-3521537ce01e",
           "columnIds": [
             "bac4ee4e-e0df-4823-bd91-83fd6f134599"
           ],
-          "x": 1034.24658203125,
-          "y": 617,
+          "x": 1077.99658203125,
+          "y": 338.25,
           "direction": "top"
         },
         "constraintName": "fk_member_to_todo_per",
@@ -879,13 +1099,41 @@
           "columnIds": [
             "9ec73bac-eda8-4eb3-a995-93258fcc118a"
           ],
-          "x": 747,
-          "y": 723.25,
+          "x": 790.75,
+          "y": 444.5,
           "direction": "left"
         },
         "constraintName": "fk_character_to_todo_per",
         "visible": true,
         "id": "b776ee0b-2190-467f-a923-5a69ce60a7d7"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "836f382f-9a17-4c8a-8274-3521537ce01e",
+          "columnIds": [
+            "8ff432a4-cb37-4688-95f2-e0a16b3eb387",
+            "25698eb9-263a-4b7f-95d6-312899e9110f"
+          ],
+          "x": 1077.99658203125,
+          "y": 550.75,
+          "direction": "bottom"
+        },
+        "end": {
+          "tableId": "08ba98d2-94c2-446e-9da6-4c80011ba041",
+          "columnIds": [
+            "6aaec7cb-c36b-41df-8e2e-d7ec70756ab2",
+            "29f18c58-cbc8-41d3-b2c9-d0322e759305"
+          ],
+          "x": 1079.027587890625,
+          "y": 635,
+          "direction": "top"
+        },
+        "constraintName": "fk_todo_private_to_todo_complete",
+        "visible": true,
+        "id": "5ac1986e-81f8-4ddf-9b50-724a8f240295"
       }
     ]
   }

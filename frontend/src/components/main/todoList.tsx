@@ -1,17 +1,15 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import { getImgURL } from "lib/getImgURL";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
@@ -23,17 +21,26 @@ import {
   TypeTag,
   ListItemOption,
 } from "./presetStyle";
+import { useFetchTodo } from "services/react-query/todo.query";
+import { charActiveNameAtom } from "services/recoil/charActive";
+import { presetTypeAtom } from "services/recoil/presetType";
+import { getImgURL } from "lib/getImgURL";
 
-/* styled-refactor */
-const CustomListItem = styled(ListItem)(() => ({
-  color: "black",
-  justifyContent: "space-between",
-  paddingRight: "26px",
-}));
 const CustomGridBox = styled(GridBox)(() => ({
   border: "1px solid #d3d1d1",
   padding: "2rem",
   paddingTop: "0",
+}));
+
+const CustomListItem = styled.div<{ checked: boolean }>((props) => ({
+  backgroundColor: props.checked ? "skyblue" : "white",
+  display: "flex",
+  alignItems: "center",
+  padding: "8px",
+  fontSize: "1.5rem",
+  fontWeight: "bold",
+  color: "black",
+  cursor: "pointer",
 }));
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
@@ -45,7 +52,7 @@ const CustomGridBox = styled(GridBox)(() => ({
 
 const not = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return a.filter(
-    (value) => b.findIndex((item) => item.id === value.id) === -1
+    (value) => b.findIndex((item) => item.todoId === value.todoId) === -1
   );
 };
 // checked 배열안의 값들이 left나 right 배열에 존재하는 값인지 유효성 검사를 마친 후 새 배열을 반환 / intersection: 교집합
@@ -54,16 +61,31 @@ const intersection = (
   b: readonly ListItemInfo[]
 ) => {
   return a.filter(
-    (value) => b.findIndex((item) => item.id === value.id) !== -1
+    (value) => b.findIndex((item) => item.todoId === value.todoId) !== -1
   );
 };
 const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return [...a, ...not(b, a)];
 };
 export const TodoList = () => {
+  const charName = useRecoilValue(charActiveNameAtom);
+  const presetType = useRecoilValue(presetTypeAtom);
+  const { todo, todo_isLoading } = useFetchTodo();
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
+
+  useEffect(() => {
+    if (!todo_isLoading) { // charName과 presetType이 일치하는 데이터만 left 배열에 넣기
+      // console.log(`todo = ${JSON.stringify(todo)} / charName = ${charName} / presetType = ${presetType}`);
+      const filteredTodo = todo.filter((item: any) => {
+        const isMatch = item.chName === charName && item.todoType === presetType.toString();
+        return isMatch;
+      });
+      setLeft(filteredTodo);
+      console.log(left);
+    }
+  }, [charName, presetType, todo_isLoading]);
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -71,11 +93,11 @@ export const TodoList = () => {
 
   // Input 체크박스 토글
   const handleToggle = (value: number) => () => {
-    const currentIndex = checked.findIndex((item) => item.id === value);
+    const currentIndex = checked.findIndex((item) => item.todoId === value);
     const newChecked = [...checked];
     const itemToAdd =
-      left.find((item) => item.id === value) ||
-      right.find((item) => item.id === value); // left에 value와 같은 id-item이 있는지 검사후, 없으면 right에서 item을 추가
+      left.find((item) => item.todoId === value) ||
+      right.find((item) => item.todoId === value); // left에 value와 같은 id-item이 있는지 검사후, 없으면 right에서 item을 추가
     if (currentIndex === -1 && itemToAdd) {
       // 해당 ID가 checkd 리스트에 존재하지 않을 때, 해당 id로 아이템 추가
       newChecked.push(itemToAdd);
@@ -100,13 +122,13 @@ export const TodoList = () => {
   };
   // 왼쪽 리스트 => 오른쪽 리스트로 옮기기
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked).sort((a, b) => a.id - b.id)); // id로 순서 정렬
+    setRight(right.concat(leftChecked).sort((a, b) => a.todoId - b.todoId)); // todoId로 순서 정렬
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
   // 오른쪽 리스트 => 왼쪽 리스트로 옮기기
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked).sort((a, b) => a.id - b.id));
+    setLeft(left.concat(rightChecked).sort((a, b) => a.todoId - b.todoId));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
@@ -136,8 +158,15 @@ export const TodoList = () => {
             inputProps={{
               "aria-label": "all items selected",
             }}
+            sx={{
+              "& svg": {
+                fontSize: "3rem !important"
+              }
+            }}
           />
+
         }
+
         title={title}
         subheader={`${numberOfChecked(items)}/${items.length} 선택`}
       />
@@ -158,19 +187,19 @@ export const TodoList = () => {
         role="list"
       >
         {items.map((item) => {
-          const labelId = `transfer-list-all-item-${item.id}-label`;
-
+          const labelId = `transfer-list-all-item-${item.todoId}-label`;
           return (
             <CustomListItem
-              key={item.id}
+              key={item.todoId}
               role="listitem"
-              onClick={handleToggle(item.id)}
-              sx={{ borderBottom: "1px solid #ddd" }}
+              onClick={handleToggle(item.todoId)}
+              style={{ borderBottom: "1px solid #ddd" }}
+              checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1} // 체크 상태를 전달
             >
               <ListItemContent>
                 <ListItemIcon sx={{ minWidth: "auto !important" }}>
                   <Checkbox
-                    checked={checked.findIndex((c) => c.id === item.id) !== -1}
+                    checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{
@@ -179,11 +208,11 @@ export const TodoList = () => {
                   />
                 </ListItemIcon>
 
-                <img
+                {/* <img
                   src={getImgURL(item.image)}
                   alt={`Image ${item.id}`}
                   style={{ marginRight: "1rem" }}
-                />
+                /> */}
                 <ListItemText id={labelId} primary={item.name} />
               </ListItemContent>
               <ListItemOption>
@@ -192,6 +221,23 @@ export const TodoList = () => {
                   <DeleteIcon />
                 </IconButton>
               </ListItemOption>
+              <ListItemIcon sx={{ minWidth: "auto !important" }}>
+                <Checkbox
+                  checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{
+                    "aria-labelledby": labelId,
+                  }}
+                  sx={{ display: "none" }}
+                />
+              </ListItemIcon>
+              <img
+                src={getImgURL(item.todoImage)}
+                alt={`Image ${item.todoId}`}
+                style={{ marginRight: "1rem" }}
+              />
+              <ListItemText id={labelId} primary={item.todoName} />
             </CustomListItem>
           );
         })}
@@ -212,7 +258,7 @@ export const TodoList = () => {
         alignItems="center"
         sx={{ "& *": { fontFamily: "Noto Sans, sans-serif !important" } }}
       >
-        <Grid item>{customList("TodoList", left)}</Grid>
+        <Grid item>{customList("숙제 프리셋", left)}</Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Button
@@ -235,19 +281,10 @@ export const TodoList = () => {
             >
               &lt;
             </Button>
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleCheckedLeft}
-              disabled={rightChecked.length === 0}
-              aria-label="selected save"
-            >
-              Save
-            </Button>
+            <button type="button">DB 저장</button>
           </Grid>
         </Grid>
-        <Grid item>{customList("Completed", right)}</Grid>
+        <Grid item>{customList("숙제 완료 내역", right)}</Grid>
       </Grid>
     </CustomGridBox>
   );

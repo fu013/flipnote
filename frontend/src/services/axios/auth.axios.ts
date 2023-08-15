@@ -1,13 +1,10 @@
 import axios from "axios";
 import { REFRESH_TOKEN_INTERVAL } from "config/constants.config";
 import customErrorToast from "lib/customErrorToast";
-import customToast from "lib/customToast";
 import { LoginParams } from "services/interfaces/auth.interface";
 import { useAxiosCustom } from "services/setting/axios.custom";
 
-// authorization 관련 hook > api
 export const useAuth_a = () => {
-  // my custom axios
   const instance = useAxiosCustom(false);
 
   const login = async (params: LoginParams) => {
@@ -16,6 +13,7 @@ export const useAuth_a = () => {
       return res.data;
     } catch (err: any) {
       if (err.response) customErrorToast(err.response.data.statusCode);
+      if (err.message) customErrorToast(err.message);
       console.log(err);
     }
   };
@@ -29,6 +27,7 @@ export const useAuth_a = () => {
       return res.data;
     } catch (err: any) {
       if (err.response) customErrorToast(err.response.data.statusCode);
+      if (err.message) customErrorToast(err.message);
       console.log(err);
     }
   };
@@ -42,6 +41,7 @@ export const useAuth_a = () => {
       return res.data;
     } catch (err: any) {
       if (err.response) customErrorToast(err.response.data.statusCode);
+      if (err.message) customErrorToast(err.message);
       console.log(err);
     }
   };
@@ -55,6 +55,7 @@ export const useAuth_a = () => {
       document.cookie = `isAccess=;max-age=${"0"}`;
       clearInterval(REFRESH_TOKEN_INTERVAL);
       if (err.response) customErrorToast(err.response.data.statusCode);
+      if (err.message) customErrorToast(err.message);
       console.error(err);
     }
   };

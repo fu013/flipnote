@@ -1,6 +1,6 @@
 // CharacterPreset.tsx
 import { getImgURL } from "lib/getImgURL";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CharacterData } from "services/interfaces/char.interface";
 import {
   PresetAdd,
@@ -26,6 +26,8 @@ import { useChar_h } from "services/hooks/char.hook";
 import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
+import { charActiveIndexAtom, charActiveNameAtom } from "services/recoil/charActive";
+import { useRecoilState } from "recoil";
 
 const StyledListItem = styled(ListItem)`
   &.active {
@@ -33,6 +35,7 @@ const StyledListItem = styled(ListItem)`
     color: #fff;
   }
 `;
+
 const StyledAvatar = styled(Avatar)`
   background: #f1f1f1;
 `;
@@ -40,10 +43,20 @@ const StyledAvatar = styled(Avatar)`
 const CharacterPreset = () => {
   const { char, char_isLoading } = useFetchChar();
   const [characterName, setCharacterName] = useState("");
-  const [activeItem, setActiveItem] = useState(0);
+  const [activeIndex, setActiveIndex] = useRecoilState(charActiveIndexAtom);
+  const [activeName, setActiveName] = useRecoilState(charActiveNameAtom);
   const useCharH = useChar_h();
   const updateCharMutation = useCharH.useUpdateChar();
   const deleteCharMutation = useCharH.useDeleteChar();
+
+  useEffect(() => {
+    if (!activeIndex || !activeName) {
+      if (char.length > 0) {
+        setActiveIndex(0);
+        setActiveName(char[0].chName);
+      }
+    }
+  }, []);
 
   const handleSetChar = async () => {
     await updateCharMutation.mutateAsync(characterName);
@@ -53,19 +66,20 @@ const CharacterPreset = () => {
     await deleteCharMutation.mutateAsync(targetCharacterName);
   };
 
-  const handleItemClick = (index: number) => {
-    setActiveItem(index);
+  const handleItemClick = (index: number, name: string) => {
+    setActiveIndex(index);
+    setActiveName(name);
   };
 
   return (
     <CharacterContainer>
       <CharacterCard>
         <CharacterImage
-          src={char[activeItem]?.chImage || getImgURL("default.png")}
+          src={char[activeIndex]?.chImage || getImgURL("default.png")}
           alt="character Profile Image"
         />
-        <CharacterName>{char[activeItem]?.chName || "미생성"}</CharacterName>
-        <CharacterLevel>{char[activeItem]?.chLevel || "Lv. 1"} </CharacterLevel>
+        <CharacterName>{char[activeIndex]?.chName || "미생성"}</CharacterName>
+        <CharacterLevel>{char[activeIndex]?.chLevel || "Lv. 1"} </CharacterLevel>
       </CharacterCard>
       <PresetContainer>
         <PresetAdd>
@@ -95,11 +109,11 @@ const CharacterPreset = () => {
             {char.map((item: CharacterData, index: number) => (
               <StyledListItem
                 key={item.chName}
-                className={activeItem === index ? "active" : ""}
-                onClick={() => handleItemClick(index)}
+                className={activeIndex === index ? "active" : ""}
+                onClick={() => handleItemClick(index, item.chName)}
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon onClick={() => handleDelChar(item.chName)} />
+                  <IconButton onClick={() => handleDelChar(item.chName)} edge="end" aria-label="delete">
+                    <DeleteIcon />
                   </IconButton>
                 }
               >
