@@ -24,11 +24,12 @@ import { useFetchTodo, useFetchTodoComplete } from "services/react-query/todo.qu
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { presetTypeAtom } from "services/recoil/presetType";
 import { userInfoAtom } from "services/recoil/auth";
-import { getImgURL } from "lib/getImgURL";
 import { v4 as uuidv4 } from "uuid";
 import { useTodo_h } from "services/hooks/todo.hook";
 import { nowDate } from "lib/getNowDate";
+import { getImgURL } from "lib/getImgURL";
 
+/* 스타일 */
 const CustomGridBox = styled(GridBox)(() => ({
   border: "1px solid #d3d1d1",
   padding: "2rem",
@@ -47,8 +48,9 @@ const CustomListItem = styled.div<{ checked: boolean }>((props) => ({
 }));
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
+
 /**
- * 공통 인자
+ * 메인 공통 인자
  * @param {readonly ListItemInfo[]} a: 선택된 데이터 리스트
  * @param {readonly ListItemInfo[]} b: 옮길 방향에 존재하는 데이터 리스트
  */
@@ -67,9 +69,11 @@ const intersection = (
     (value) => b.findIndex((item) => item.todoId === value.todoId) !== -1
   );
 };
+
 const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return [...a, ...not(b, a)];
 };
+
 export const TodoList = () => {
   const charName = useRecoilValue(charActiveNameAtom);
   const mbId = useRecoilValue(userInfoAtom);
@@ -264,6 +268,7 @@ export const TodoList = () => {
           placeholder="새 프리셋 추가"
         />
         <Button variant="contained" onClick={handleAddPreset}>추가</Button>
+        <Button variant="contained">모달창</Button>
       </div>
       <Grid
         container
@@ -295,7 +300,7 @@ export const TodoList = () => {
             >
               &lt;
             </Button>
-            <button type="button" onClick={() => useUpdateTodo.mutateAsync({ "left": left, "right": right })}>DB 저장</button>
+            <Button variant="contained" onClick={() => useUpdateTodo.mutateAsync({ "left": left, "right": right })}>내역 저장</Button>
           </Grid>
         </Grid>
         <Grid item>{customList("숙제 완료 내역", right)}</Grid>
