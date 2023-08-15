@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column, CreateDateColumn } from 'typeorm';
 import { Member } from './member.entity';
 import { TodoPrivate } from './todo.private.entity';
 import { Character } from './character.entity';
@@ -12,7 +12,7 @@ export class TodoComplete {
   chName: string;
 
   @PrimaryColumn({ name: 'todo_id' })
-  todoId: number;
+  todoId: string;
 
   @Column({ name: 'todo_name' })
   todoName: string;
@@ -25,6 +25,9 @@ export class TodoComplete {
 
   @Column({ name: 'completed_date', default: () => 'CURRENT_TIMESTAMP' })
   completedDate: Date;
+
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
 
   @ManyToOne(() => Character, (character) => character.todoCompletes)
   @JoinColumn({ name: 'ch_name', referencedColumnName: 'chName' })

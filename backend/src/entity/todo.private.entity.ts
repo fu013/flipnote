@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Index, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Index, OneToMany } from 'typeorm';
 import { Member } from './member.entity';
 import { Character } from './character.entity';
 import { TodoComplete } from './todo.complete.entity';
@@ -6,8 +6,8 @@ import { TodoComplete } from './todo.complete.entity';
 @Entity({ name: 'todo_private' })
 @Index('todo_private_index', ['mbId', 'chName', 'todoName'])
 export class TodoPrivate {
-  @PrimaryGeneratedColumn({ name: 'todo_id' })
-  todoId: number;
+  @PrimaryColumn({ name: 'todo_id' })
+  todoId: string;
 
   @Column({ name: 'mb_id' })
   mbId: string;

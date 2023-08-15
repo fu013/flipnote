@@ -1,128 +1,10 @@
 ## 개발 계획
 
 #### 환경설정
-- DB: 비용적인 측면에서 가장 크게 고려해야할 사항, AWS Dynamo DB랑 MongoDB중에 고민중, 아마 인스턴스에 직접 DB를 설치해서 쓸지, 따로 DB를 나눠서 쓸지에 대해서 정해지면 결정할 듯
-- 나눠서 쓰면 너무 비용이 커질거 같아서 계산해보고 결정해야겠음.
+- 배포는 오라클 클라우드로 결정! 상시 무료에 무료계정에서 돈나갈일이 없다는게 큰 장점인듯함.
+- aws를 쓰면 좋겠지만, 회사가 아닌이상에야 과금의 부담이 너무 커서, 회사 및 공부용으로만 일단 쓸듯하다.
 
-- DB 보다는 JSON 형태의 문서를 계속 읽어서 업데이트하는 방식이 좀 더 합리적 이겠음, 사용자가 불편함을 느낄 수는 있으나, 서버관리측면에서 내가 정보를 가지고있는것이 너무 비용이 크고 사용자 입장에서도
-좀 그렇다. 그래서 JSON 문서를 가지고 있되, 해당 문서를 엑셀로 파싱해줄 수 있는 기능을 추가한다면 좋을것같다.
-
-JSON 예시)
-{
-  "global": {
-    "daily_presets": [
-      {"id": 1, "title": "일일 퀘스트 프리셋 1", "description": "설정1"},
-      {"id": 2, "title": "일일 퀘스트 프리셋 2", "description": "설정2"}
-    ],
-    "weekly_presets": [
-      {"id": 1, "title": "주간 퀘스트 프리셋 1", "description": "설정1"},
-      {"id": 2, "title": "주간 퀘스트 프리셋 2", "description": "설정2"}
-    ],
-    "monthly_presets": [
-      {"id": 1, "title": "월간 퀘스트 프리셋 1", "description": "설정1"},
-      {"id": 2, "title": "월간 퀘스트 프리셋 2", "description": "설정2"}
-    ]
-  },
-  "characters": [
-    {
-      "id": 1,
-      "name": "캐릭터1",
-      "level": 10,
-      "quests": {
-        "daily": {
-          "2023-08-02": [
-            {"id": 1, "title": "일일 퀘스트1", "completed": true},
-            {"id": 2, "title": "일일 퀘스트2", "completed": false}
-          ],
-          "2023-08-01": [
-            {"id": 3, "title": "일일 퀘스트3", "completed": true}
-          ]
-        },
-        "weekly": {
-          "2023-08-02": [
-            {"id": 1, "title": "주간 퀘스트1", "completed": true}
-          ],
-          "2023-07-31": [
-            {"id": 2, "title": "주간 퀘스트2", "completed": false}
-          ]
-        },
-        "monthly": {
-          "2023-08-01": [
-            {"id": 1, "title": "월간 퀘스트1", "completed": true}
-          ],
-          "2023-07-01": [
-            {"id": 2, "title": "월간 퀘스트2", "completed": false}
-          ]
-        }
-      }
-    },
-    // 다른 캐릭터들...
-  ]
-}
-
-사용 예시)
-import React, { useEffect, useState } from 'react';
-
-interface Character {
-  id: number;
-  name: string;
-  level: number;
-  quests: {
-    daily: { [date: string]: Quest[] };
-    weekly: { [date: string]: Quest[] };
-    monthly: { [date: string]: Quest[] };
-  };
-}
-
-interface Quest {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-const CharacterList: React.FC = () => {
-  const [characters, setCharacters] = useState<Character[]>([]);
-
-  useEffect(() => {
-    fetch('/data.json')
-      .then((response) => response.json())
-      .then((data) => {
-        setCharacters(data.characters);
-      })
-      .catch((error) => console.error('Error fetching JSON data:', error));
-  }, []);
-
-  return (
-    <div>
-      {characters.map((character) => (
-        <div key={character.id}>
-          <h3>{character.name}</h3>
-          <p>Level: {character.level}</p>
-          <h4>Daily Quests</h4>
-          <ul>
-            {Object.entries(character.quests.daily).map(([date, quests]) => (
-              <li key={date}>
-                {date}:
-                <ul>
-                  {quests.map((quest) => (
-                    <li key={quest.id}>
-                      {quest.title} - {quest.completed ? 'Completed' : 'Incomplete'}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-          {/* Add code for Weekly and Monthly Quests as well */}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default CharacterList;
-
-도메인은 투데이 메이플 or 데일리 메이플이 괜찮아 보임
+도메인은 데일리 메이플 or 메이플 노트 이 괜찮아 보임
 
 완료 ✅ | 진행중 ❎
 
@@ -139,3 +21,27 @@ export default CharacterList;
 5. 일퀘 = 일 초기화 주간(월) = 월 초기화, 주간(목) = 목 초기화, 월간(월) 월 1일 초기화 :: 디자인 ❎ / 기능 ❎
 
 6. 관리자 공통 / 개인이 추가한 투두 프리셋으로 나누기 :: 디자인 ❎ / 기능 ❎
+
+2023-08-15 대격변 이후 ~
+할일 생각중 ...
+
+1. 일단 테스트로 일일/주간/월간이 잘 초기화 되는지 확인
+
+2. 프리셋을 개인당 얼마까지 허용가능하게 할것인가.
+
+3. 새 프리셋 등록 이외에 관리자 프리셋 불러오기 같은 기능 개발
+
+4. 가끔씩 이유 모를? react-query에서 불러오는 데이터가 동기가 안맞아 에러 페이지가 뜰때가 있는데
+주로 vscode save할때마다 발생하는 거 같으므로 현재 개발시에는 크게 우려되는 사항은 아니나, 추후 사용자에겐 절대 노출 되지 못하게 해야할 것
+
+5. 새 프리셋 등록란에서 모달창안에서 기존 프리셋 삭제도 가능하게끔 할 것, 저장시 적용되는 것도 같음
+
+6. 초기화 이후, 기존 프리셋 완료 내역이 있으면, 잘 업데이트 되는지 확인해볼것
+
+7. 아그리고 제일 중요한게 completed_date가 만약에 기존 프리셋 완료 내역이 있으면, 업데이트 되는지 확인해볼것 만약에 안된다면 수동으로 completed_date를 갱신하는 방향으로 가야할 거같다.
+
+8. 프리셋 등록시 이미지도 등록 가능하게 끔, 수정시에는 기존 이미지 삭제 후 업로드 등 이미지 처리에도 신경을 써야할거같다.
+
+9. 뭐 당연한 거겠지만 전체적인 디자인을 변경해야할것같다. 기존 뼈대는 괜찮다고 생각하지만, 전반적인 디자인을 신경 쓰도록하자.
+
+10. 다크모드 제작 및 theme 으로 뭔가 light / dark 나눠서 css 설정해야할것같은데, 타입스크립트라 충돌이 있는거 같다. 이것도 추후 생각해보자.

@@ -29,6 +29,7 @@ export class CrawlerService {
       throw new Error('An error occurred while Crawling [getCharacterProfileImg]');
     }
   }
+
   public async getCharacterMurung(username: string) {
     try {
       const url = `${this.maplegg_user_URL}/${username}`;
@@ -45,6 +46,7 @@ export class CrawlerService {
       throw new Error('An error occurred while Crawling [getCharacterMurung]');
     }
   }
+
   public async getCharacterLevel(username: string) {
     try {
       const url = `${this.maplegg_user_URL}/${username}`;

@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity({ name: 'todo_public' })
 @Index('todo_public_index', ['todoName'])
 export class TodoPublic {
-  @PrimaryGeneratedColumn({ name: 'todo_id' })
-  todoId: number;
+  @PrimaryColumn({ name: 'todo_id' })
+  todoId: string;
 
   @Column({ name: 'todo_name' })
   todoName: string;

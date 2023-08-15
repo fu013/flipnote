@@ -19,7 +19,7 @@ import {
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
-      logging: true,
+      logging: false,
       type: 'mysql',
       host: MYSQL_DB_HOST,
       port: MYSQL_DB_PORT,
