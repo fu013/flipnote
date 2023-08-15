@@ -35,6 +35,6 @@ export class TodoPrivate {
   @JoinColumn({ name: 'ch_name', referencedColumnName: 'chName' })
   character: Character;
 
-  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.character)
+  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.todoPrivate)
   todoCompletes: TodoComplete[];
 }

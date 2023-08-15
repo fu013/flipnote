@@ -27,6 +27,6 @@ export class Member {
   @OneToMany(() => TodoPrivate, (todoPrivate) => todoPrivate.member)
   todoPrivates: TodoPrivate[];
 
-  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.character)
+  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.member)
   todoCompletes: TodoComplete[];
 }

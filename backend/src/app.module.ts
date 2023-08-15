@@ -36,7 +36,9 @@ import { TodoModule } from './todo/todo.module';
       ttl: 300,
       limit: 1000,
     }),
-    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService
+    }),
     WinstonModule.forRoot({
       /* { 
         윈스턴 로깅모듈
@@ -81,4 +83,4 @@ import { TodoModule } from './todo/todo.module';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

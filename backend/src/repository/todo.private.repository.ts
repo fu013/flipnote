@@ -18,12 +18,22 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
         try {
             await queryRunner.connect();
             await queryRunner.startTransaction();
+
             const result = await queryRunner.manager
                 .createQueryBuilder(TodoPrivate, 'tp')
+                .select([
+                    'tp.todoId',
+                    'tp.mbId',
+                    'tp.chName',
+                    'tp.todoName',
+                    'tp.todoImage',
+                    'tp.todoType',
+                    'tp.createdDate',
+                ])
                 .leftJoinAndSelect(TodoComplete, 'tc', `
-                    tp.mbId = tc.mbId 
-                    AND tp.chName = tc.chName 
-                    AND tp.todoId = tc.todoId
+                    tp.mbId = tc.member.mbId 
+                    AND tp.chName = tc.character.chName 
+                    AND tp.todoId = tc.todo_id
                 `)
                 .where('tp.mbId = :mbId', { mbId })
                 .andWhere(`
@@ -38,6 +48,8 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                     )`,
                 )
                 .getMany();
+
+            console.log(result);
 
             await queryRunner.commitTransaction();
 
