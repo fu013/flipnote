@@ -15,6 +15,26 @@ import { useRecoilState } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  GridBox,
+  ListItemContent,
+  TypeTag,
+  ListItemOption,
+} from "./presetStyle";
+
+/* styled-refactor */
+const CustomListItem = styled(ListItem)(() => ({
+  color: "black",
+  justifyContent: "space-between",
+  paddingRight: "26px",
+}));
+const CustomGridBox = styled(GridBox)(() => ({
+  border: "1px solid #d3d1d1",
+  padding: "2rem",
+  paddingTop: "0",
+}));
 
 /* 할일 목록 리스트 체크 미완료 => 완료 기능 */
 /**
@@ -22,10 +42,6 @@ import styled from "@emotion/styled";
  * @param {readonly ListItemInfo[]} a: 선택된 데이터 리스트
  * @param {readonly ListItemInfo[]} b: 옮길 방향에 존재하는 데이터 리스트
  */
-
-const CustomListItem = styled(ListItem)(() => ({
-  color: "black",
-}));
 
 const not = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
   return a.filter(
@@ -128,7 +144,7 @@ export const TodoList = () => {
       <Divider />
       <List
         sx={{
-          width: 550,
+          width: 500,
           height: 500,
           bgcolor: "background.paper",
           overflow: "auto",
@@ -151,22 +167,31 @@ export const TodoList = () => {
               onClick={handleToggle(item.id)}
               sx={{ borderBottom: "1px solid #ddd" }}
             >
-              <ListItemIcon sx={{ minWidth: "auto !important" }}>
-                <Checkbox
-                  checked={checked.findIndex((c) => c.id === item.id) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
+              <ListItemContent>
+                <ListItemIcon sx={{ minWidth: "auto !important" }}>
+                  <Checkbox
+                    checked={checked.findIndex((c) => c.id === item.id) !== -1}
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{
+                      "aria-labelledby": labelId,
+                    }}
+                  />
+                </ListItemIcon>
+
+                <img
+                  src={getImgURL(item.image)}
+                  alt={`Image ${item.id}`}
+                  style={{ marginRight: "1rem" }}
                 />
-              </ListItemIcon>
-              <img
-                src={getImgURL(item.image)}
-                alt={`Image ${item.id}`}
-                style={{ marginRight: "1rem" }}
-              />
-              <ListItemText id={labelId} primary={item.name} />
+                <ListItemText id={labelId} primary={item.name} />
+              </ListItemContent>
+              <ListItemOption>
+                <TypeTag>기본</TypeTag>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemOption>
             </CustomListItem>
           );
         })}
@@ -175,10 +200,9 @@ export const TodoList = () => {
   );
 
   return (
-    <div>
-      <div>
-        <h5>새 프리셋</h5>
-        <input type="text" />
+    <CustomGridBox>
+      <div style={{ transform: "translateY(-50%)" }}>
+        <input type="text" placeholder="새 프리셋 추가" />
         <button>추가</button>
       </div>
       <Grid
@@ -225,7 +249,7 @@ export const TodoList = () => {
         </Grid>
         <Grid item>{customList("Completed", right)}</Grid>
       </Grid>
-    </div>
+    </CustomGridBox>
   );
 };
 

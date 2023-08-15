@@ -14,7 +14,6 @@ import { MainTabs } from "./App.style";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
-
 const App = () => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(isLoggedInAtom);
@@ -61,6 +60,6 @@ const App = () => {
       <Footer />
     </section>
   );
-}
+};
 
 export default App;

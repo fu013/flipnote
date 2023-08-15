@@ -5,19 +5,13 @@ import { CharacterData } from "services/interfaces/char.interface";
 import {
   PresetAdd,
   PresetBox,
-  PresetDelBtn,
-  PresetTitle,
   PresetContainer,
-  PresetCharacterName,
   CharacterCard,
   CharacterName,
   CharacterLevel,
-  PresetItem,
   CharacterContainer,
   CharacterImage,
   PresetAddInput,
-  PresetAddBtn,
-  PresetImg,
   ListCharImage,
 } from "./presetStyle";
 import List from "@mui/material/List";
@@ -30,6 +24,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useFetchChar } from "services/react-query/character.query";
 import { useChar_h } from "services/hooks/char.hook";
 import styled from "@emotion/styled";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
 
 const StyledListItem = styled(ListItem)`
   &.active {
@@ -79,9 +75,20 @@ const CharacterPreset = () => {
             value={characterName}
             onChange={(e) => setCharacterName(e.target.value)}
           />
-          <PresetAddBtn type="button" onClick={() => handleSetChar()}>
-            ⬇
-          </PresetAddBtn>
+          <Button
+            sx={{ minWidth: "4rem !important" }}
+            onClick={() => handleSetChar()}
+            variant="contained"
+            endIcon={
+              <SendIcon
+                sx={{
+                  "& span": {
+                    marginLeft: "0 !important",
+                  },
+                }}
+              />
+            }
+          ></Button>
         </PresetAdd>
         <PresetBox>
           <List>
