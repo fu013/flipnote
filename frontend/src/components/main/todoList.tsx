@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -17,14 +17,17 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   GridBox,
-  ListItemContent,
   TypeTag,
   ListItemOption,
 } from "./presetStyle";
-import { useFetchTodo } from "services/react-query/todo.query";
+import { useFetchTodo, useFetchTodoComplete } from "services/react-query/todo.query";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { presetTypeAtom } from "services/recoil/presetType";
+import { userInfoAtom } from "services/recoil/auth";
 import { getImgURL } from "lib/getImgURL";
+import { v4 as uuidv4 } from "uuid";
+import { useTodo_h } from "services/hooks/todo.hook";
+import { nowDate } from "lib/getNowDate";
 
 const CustomGridBox = styled(GridBox)(() => ({
   border: "1px solid #d3d1d1",
@@ -69,21 +72,29 @@ const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
 };
 export const TodoList = () => {
   const charName = useRecoilValue(charActiveNameAtom);
+  const mbId = useRecoilValue(userInfoAtom);
   const presetType = useRecoilValue(presetTypeAtom);
   const { todo, todo_isLoading } = useFetchTodo();
+  const { todo_c, todo_c_isLoading } = useFetchTodoComplete();
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
+  const [newPresetTitle, setNewPresetTitle] = useState("");
+  const useTodoH = useTodo_h();
+  const useUpdateTodo = useTodoH.useUpdateTodo();
 
   useEffect(() => {
-    if (!todo_isLoading) { // charName과 presetType이 일치하는 데이터만 left 배열에 넣기
-      // console.log(`todo = ${JSON.stringify(todo)} / charName = ${charName} / presetType = ${presetType}`);
+    if (!todo_isLoading) {
       const filteredTodo = todo.filter((item: any) => {
         const isMatch = item.chName === charName && item.todoType === presetType.toString();
         return isMatch;
       });
+      const filteredTodoCompleted = todo_c.filter((item: any) => {
+        const isMatch = item.chName === charName && item.todoType === presetType.toString();
+        return isMatch;
+      });
       setLeft(filteredTodo);
-      console.log(left);
+      setRight(filteredTodoCompleted);
     }
   }, [charName, presetType, todo_isLoading]);
 
@@ -92,7 +103,7 @@ export const TodoList = () => {
   const rightChecked = intersection(checked, right);
 
   // Input 체크박스 토글
-  const handleToggle = (value: number) => () => {
+  const handleToggle = (value: string) => () => {
     const currentIndex = checked.findIndex((item) => item.todoId === value);
     const newChecked = [...checked];
     const itemToAdd =
@@ -120,17 +131,37 @@ export const TodoList = () => {
       setChecked(union(checked, items));
     }
   };
+
   // 왼쪽 리스트 => 오른쪽 리스트로 옮기기
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked).sort((a, b) => a.todoId - b.todoId)); // todoId로 순서 정렬
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
+
   // 오른쪽 리스트 => 왼쪽 리스트로 옮기기
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked).sort((a, b) => a.todoId - b.todoId));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+  };
+
+  // 프리셋 추가
+  const handleAddPreset = () => {
+    if (newPresetTitle.trim() === '') {
+      return;
+    }
+    const newPreset: ListItemInfo = {
+      todoId: uuidv4(),
+      todoName: newPresetTitle,
+      todoType: presetType.toString(),
+      todoImage: '',
+      mbId: mbId,
+      chName: charName,
+      createdDate: nowDate(),
+    };
+    setLeft([...left, newPreset]);
+    setNewPresetTitle('');
   };
 
   const customList = (title: ReactNode, items: readonly ListItemInfo[]) => (
@@ -164,9 +195,7 @@ export const TodoList = () => {
               }
             }}
           />
-
         }
-
         title={title}
         subheader={`${numberOfChecked(items)}/${items.length} 선택`}
       />
@@ -196,7 +225,6 @@ export const TodoList = () => {
               style={{ borderBottom: "1px solid #ddd" }}
               checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1} // 체크 상태를 전달
             >
-
               <ListItemIcon sx={{ minWidth: "auto !important" }}>
                 <Checkbox
                   checked={checked.findIndex((c) => c.todoId === item.todoId) !== -1}
@@ -208,11 +236,11 @@ export const TodoList = () => {
                   sx={{ display: "none" }}
                 />
               </ListItemIcon>
-              <img
+              {/* <img
                 src={getImgURL(item.todoImage)}
                 alt={`Image ${item.todoId}`}
                 style={{ marginRight: "1rem" }}
-              />
+              /> */}
               <ListItemText id={labelId} primary={item.todoName} />
               <ListItemOption>
                 <TypeTag>기본</TypeTag>
@@ -230,8 +258,12 @@ export const TodoList = () => {
   return (
     <CustomGridBox>
       <div style={{ transform: "translateY(-50%)" }}>
-        <input type="text" placeholder="새 프리셋 추가" />
-        <button>추가</button>
+        <input type="text"
+          value={newPresetTitle}
+          onChange={(e) => setNewPresetTitle(e.target.value)}
+          placeholder="새 프리셋 추가"
+        />
+        <Button variant="contained" onClick={handleAddPreset}>추가</Button>
       </div>
       <Grid
         container
@@ -263,7 +295,7 @@ export const TodoList = () => {
             >
               &lt;
             </Button>
-            <button type="button">DB 저장</button>
+            <button type="button" onClick={() => useUpdateTodo.mutateAsync({ "left": left, "right": right })}>DB 저장</button>
           </Grid>
         </Grid>
         <Grid item>{customList("숙제 완료 내역", right)}</Grid>

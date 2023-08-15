@@ -5,6 +5,8 @@ const { persistAtom } = recoilPersist();
 
 /* 선택된 캐릭터 정보 */
 /**
+ * charActiveIndexAtom: 선택된 캐릭터 인덱스(순번)
+ * charActiveNameAtom: 선택된 캐릭터 이름
  */
 export const charActiveIndexAtom = atom<number>({
   key: "charActiveIndex",

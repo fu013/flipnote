@@ -54,6 +54,8 @@ const CharacterPreset = () => {
       if (char.length > 0) {
         setActiveIndex(0);
         setActiveName(char[0].chName);
+      } else {
+        setActiveName("");
       }
     }
   }, []);

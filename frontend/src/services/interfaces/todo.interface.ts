@@ -1,7 +1,7 @@
 export interface ListItemInfo {
-  todoId: number;
+  todoId: string;
   todoName: string;
-  todoType: string | number;
+  todoType: string;
   todoImage: string;
   mbId: string;
   chName: string;

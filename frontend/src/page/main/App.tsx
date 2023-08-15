@@ -38,7 +38,7 @@ const App = () => {
             onChange={handleChange}
             aria-label="icon label tabs example"
             sx={{
-              marginBottom: "2rem",
+              marginBottom: "4rem",
               marginTop: "3rem",
               "& *": {
                 fontFamily: "Noto Sans, sans-serif !important",
@@ -47,7 +47,8 @@ const App = () => {
             }}
           >
             <Tab label="일간" />
-            <Tab label="주간" />
+            <Tab label="주간(월)" />
+            <Tab label="주간(목)" />
             <Tab label="월간" />
           </Tabs>
           <TodoList />
