@@ -9,6 +9,39 @@ import { ListItemInfo } from "services/interfaces/todo.interface";
 import { leftState } from "services/recoil/atom";
 import { v4 as uuidv4 } from "uuid";
 import { useTodo_h } from "services/hooks/todo.hook";
+import styled from '@emotion/styled';
+
+const StyledModal = styled(Modal)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity (0.5 in this example) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ModalPaper = styled(Paper)`
+  padding: 16px;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  justify-content: space-between;
+`;
+
+const PresetList = styled.div`
+  margin-top: 16px;
+  margin-bottom: 16px;
+`;
+
+const PresetItem = styled.div`
+  margin-bottom: 8px;
+`;
 
 const SimpleModal = ({ open, onClose }: any) => {
   const [newPresetTitle, setNewPresetTitle] = useState("");
@@ -41,21 +74,29 @@ const SimpleModal = ({ open, onClose }: any) => {
     setNewPresetTitle('');
   };
 
+  const handleClose = () => {
+    setNewPreset(left);
+    onClose();
+  };
+
   return (
-    <Modal open={open} onClose={onClose}>
-      <div style={{ position: 'absolute', top: '50%', left: '50%', width: "500px", height: "500px", transform: 'translate(-50%, -50%)' }}>
-        <Paper style={{ padding: '16px', height: "100%" }}>
-          <input type="text"
-            value={newPresetTitle}
-            onChange={(e) => setNewPresetTitle(e.target.value)}
-            placeholder="새 프리셋 추가"
-          />
-          <Button variant="contained" onClick={(e: any) => handleAddPreset()}>추가</Button>
-          <Button variant="contained" onClick={() => useNewPreset.mutateAsync(newPreset)}>저장</Button>
-          <Button onClick={onClose}>닫기</Button>
-        </Paper>
-      </div>
-    </Modal>
+    <StyledModal open={open} onClose={onClose}>
+      <ModalPaper>
+        <input type="text"
+          value={newPresetTitle}
+          onChange={(e) => setNewPresetTitle(e.target.value)}
+          placeholder="새 프리셋 추가"
+        />
+        <Button variant="contained" onClick={(e: any) => handleAddPreset()}>추가</Button>
+        <PresetList>
+          {newPreset.map(item => (
+            <PresetItem key={item.todoId}>{item.todoName}</PresetItem>
+          ))}
+        </PresetList>
+        <Button variant="contained" onClick={() => useNewPreset.mutateAsync(newPreset)}>저장</Button>
+        <Button onClick={handleClose}>닫기</Button>
+      </ModalPaper>
+    </StyledModal>
   );
 };
 

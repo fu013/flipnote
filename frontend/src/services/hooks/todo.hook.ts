@@ -9,7 +9,7 @@ export const useTodo_h = () => {
     return useMutation((Params: any) => useTodoA.setTodoSync(Params.left, Params.right),
       {
         onSuccess: async (res) => {
-          if (res.status && res.status === 201) queryClient.invalidateQueries(['todo']);
+          if (res.status && res.status === 201) queryClient.invalidateQueries(['todo', 'todo_c']);
           else throw new Error("Internal Server error");
         },
         onError: (err: any) => {

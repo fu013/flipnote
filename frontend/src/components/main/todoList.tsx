@@ -13,18 +13,13 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   GridBox,
   TypeTag,
-  ListItemOption,
 } from "./presetStyle";
 import { useFetchTodo, useFetchTodoComplete } from "services/react-query/todo.query";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { presetTypeAtom } from "services/recoil/presetType";
-import { userInfoAtom } from "services/recoil/auth";
-
 import { useTodo_h } from "services/hooks/todo.hook";
 import SimpleModal from "components/modal/newPreset.modal";
 import { getImgURL } from "lib/getImgURL";
@@ -86,20 +81,20 @@ export const TodoList = () => {
   const useTodoH = useTodo_h();
   const useUpdateTodo = useTodoH.useUpdateTodo();
 
+  const filterTodo = (array: ListItemInfo[], charName: string, presetType: string | number) => {
+    return array.filter((item) => item.chName === charName && item.todoType === presetType.toString());
+  };
+
   useEffect(() => {
     if (!todo_isLoading) {
-      const filteredTodo = todo.filter((item: any) => {
-        const isMatch = item.chName === charName && item.todoType === presetType.toString();
-        return isMatch;
-      });
-      const filteredTodoCompleted = todo_c.filter((item: any) => {
-        const isMatch = item.chName === charName && item.todoType === presetType.toString();
-        return isMatch;
-      });
+      const filteredTodo = filterTodo(todo, charName, presetType);
+      const filteredTodoCompleted = filterTodo(todo_c, charName, presetType);
       setLeft(filteredTodo);
       setRight(filteredTodoCompleted);
     }
   }, [charName, presetType, todo, todo_isLoading]);
+
+
 
   // 좌측, 우측 체크리스트 따로 관리할 수 있게 변수로 저장 :: 옮길 때 사용
   const leftChecked = intersection(checked, left);
@@ -137,14 +132,14 @@ export const TodoList = () => {
 
   // 왼쪽 리스트 => 오른쪽 리스트로 옮기기
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked).sort((a, b) => a.todoId - b.todoId)); // todoId로 순서 정렬
+    setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   // 오른쪽 리스트 => 왼쪽 리스트로 옮기기
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked).sort((a, b) => a.todoId - b.todoId));
+    setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
@@ -236,12 +231,6 @@ export const TodoList = () => {
                 style={{ marginRight: "1rem" }}
               /> */}
               <ListItemText id={labelId} primary={item.todoName} />
-              <ListItemOption>
-                <TypeTag>기본</TypeTag>
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemOption>
             </CustomListItem>
           );
         })}
