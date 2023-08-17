@@ -256,8 +256,8 @@ export const TodoList = () => {
           <SimpleModal
             open={presetModalOpen}
             onClose={handleClosePresetModal}
-            todo={todo}
-            todo_c={todo_c}
+            todo={filterTodo(todo, charName, presetType)}
+            todo_c={filterTodo(todo_c, charName, presetType)}
           />
         </div>
       </div>

@@ -118,11 +118,8 @@ const SimpleModal = ({
     } else {
       newChecked.splice(currentIndex, 1);
     }
-
     setChecked(newChecked);
   };
-
-  console.log(checked);
 
   return (
     <StyledModal open={open} onClose={onClose}>
