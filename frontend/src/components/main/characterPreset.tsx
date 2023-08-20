@@ -105,6 +105,7 @@ const CharacterPreset = () => {
               />
             }
           ></Button>
+          <Button variant="contained" sx={{ minWidth: "4rem !important", marginLeft: "0.5rem" }}>최신화</Button>
         </PresetAdd>
         <PresetBox>
           <List>

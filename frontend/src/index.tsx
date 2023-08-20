@@ -32,6 +32,9 @@ declare module "@mui/material/styles" {
 }
 
 export const theme = createTheme({
+  typography: {
+    fontFamily: "Noto Sans, sans-serif",
+  },
   palette: {
     mode: "light",
     primary: {

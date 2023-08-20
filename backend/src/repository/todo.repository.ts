@@ -154,7 +154,6 @@ export class TodoRepository extends Repository<TodoPrivate> {
             .execute();
     }
 
-
     /**
      * todoType
      * @todoType Varchar(255) 0: 하루 초기화
