@@ -5,6 +5,9 @@ import { Character } from './character.entity';
 
 @Entity({ name: 'todo_complete' })
 export class TodoComplete {
+  @Column({ name: 'order_no', default: 0, nullable: true })
+  orderNo: number;
+
   @PrimaryColumn({ name: 'mb_id' })
   mbId: string;
 

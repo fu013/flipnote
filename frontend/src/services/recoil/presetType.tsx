@@ -11,6 +11,6 @@ const { persistAtom } = recoilPersist();
  */
 export const presetTypeAtom = atom<number>({
   key: "presetType",
-  default: 1,
+  default: 0,
   effects_UNSTABLE: [persistAtom],
 });

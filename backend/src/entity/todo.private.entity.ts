@@ -6,6 +6,9 @@ import { TodoComplete } from './todo.complete.entity';
 @Entity({ name: 'todo_private' })
 @Index('todo_private_index', ['mbId', 'chName', 'todoName'])
 export class TodoPrivate {
+  @Column({ name: 'order_no', default: 0, nullable: true })
+  orderNo: number;
+
   @PrimaryColumn({ name: 'todo_id' })
   todoId: string;
 
@@ -35,6 +38,7 @@ export class TodoPrivate {
   @JoinColumn({ name: 'ch_name', referencedColumnName: 'chName' })
   character: Character;
 
-  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.todoPrivate)
+  @OneToMany(() => TodoComplete, (todoComplete) => todoComplete.todoPrivate, { cascade: ['update', 'remove'] })
+  @JoinColumn({ name: 'todo_id', referencedColumnName: 'todoId' })
   todoCompletes: TodoComplete[];
 }

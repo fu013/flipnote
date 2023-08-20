@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { TodoComplete } from 'src/entity/todo.complete.entity';
 import { TodoPrivate } from 'src/entity/todo.private.entity';
-import { ListItemInfo } from 'src/interface/todo';
+import { ChangeListItemInfo, ListItemInfo } from 'src/interface/todo';
 import { DataSource, EntityRepository, EntityTarget, Repository } from 'typeorm';
 
 @Injectable()
 @EntityRepository(TodoPrivate)
-export class TodoPrivateRepository extends Repository<TodoPrivate> {
+export class TodoRepository extends Repository<TodoPrivate> {
     constructor(
         private dataSource: DataSource,
     ) {
@@ -17,6 +17,7 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
     async getFilteredTodoList(mbId: string): Promise<TodoPrivate[]> {
         return this.createQueryBuilder('tp')
             .select([
+                'tp.orderNo',
                 'tp.todoId',
                 'tp.mbId',
                 'tp.chName',
@@ -32,6 +33,7 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
             `)
             .where('tp.mbId = :mbId', { mbId })
             .andWhere(this.getFilterConditions())
+            .orderBy('tp.orderNo', 'ASC')
             .getMany();
     }
 
@@ -39,6 +41,7 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
     async getCompletedTodoList(mbId: string): Promise<TodoPrivate[]> {
         return this.createQueryBuilder('tp')
             .select([
+                'tp.orderNo',
                 'tp.todoId',
                 'tp.mbId',
                 'tp.chName',
@@ -54,6 +57,7 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
             `)
             .where('tp.mbId = :mbId', { mbId })
             .andWhere(this.getCompletedConditions())
+            .orderBy('tc.orderNo', 'ASC')
             .getMany();
     }
 
@@ -67,10 +71,11 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                 const existingTodo = await queryRunner.manager.findOne(TodoPrivate, {
                     where: { todoId: todoData.todoId },
                 });
-
                 if (existingTodo) {
                     await queryRunner.manager.update(TodoPrivate, { todoId: todoData.todoId }, todoData);
                     const deleteConditions = this.getDeleteConditions(todoData.todoType);
+
+                    // todoData가 있다는 건 Private 요청이 왔다는 의미로 미완료 목록에 담아야 한다는 의미이기에, complete 배열에 겹치는 날짜 조건의 컬럼이 있다면 삭제
                     await this.deleteByConditions(TodoComplete, mbId, deleteConditions, todoData.todoId, todoData.chName);
                 } else {
                     await queryRunner.manager.save(TodoPrivate, todoData);
@@ -80,17 +85,17 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                 const existingTodo = await queryRunner.manager.findOne(TodoComplete, {
                     where: { todoId: todoData.todoId },
                 });
-
                 if (existingTodo) {
                     const currentDate = new Date();
                     const updatedTodoData = {
                         ...todoData,
                         completedDate: currentDate
                     };
-                    await queryRunner.manager.update(TodoComplete, { todoId: todoData.todoId }, updatedTodoData);
+                    await queryRunner.manager.update(TodoComplete, { mbId: mbId, todoId: todoData.todoId }, updatedTodoData);
                 } else {
                     await queryRunner.manager.save(TodoComplete, todoData);
                 }
+                await queryRunner.manager.update(TodoPrivate, { mbId: mbId, todoId: todoData.todoId }, { orderNo: null });
             }
             await queryRunner.commitTransaction();
         } catch (error) {
@@ -102,19 +107,24 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
     }
 
     // 새로운 프리셋 등록
-    async setNewPreset(mbId: string, todoPrivate: ListItemInfo[]): Promise<void> {
+    async setNewPreset(mbId: string, todoPrivate: ChangeListItemInfo[]): Promise<void> {
         const queryRunner = this.dataSource.createQueryRunner();
         try {
             await queryRunner.connect();
             await queryRunner.startTransaction();
             for (const todoData of todoPrivate) {
-                const existingTodo = await queryRunner.manager.findOne(TodoPrivate, {
-                    where: { todoId: todoData.todoId },
-                });
-                if (existingTodo) {
-                    await queryRunner.manager.update(TodoPrivate, { todoId: todoData.todoId }, todoData);
+                if (!todoData.isDelete) {
+                    delete todoData.isDelete;
+                    const existingTodo = await queryRunner.manager.findOne(TodoPrivate, {
+                        where: { todoId: todoData.todoId },
+                    });
+                    if (existingTodo) {
+                        await queryRunner.manager.update(TodoPrivate, { mbId: mbId, todoId: todoData.todoId }, todoData);
+                    } else {
+                        await queryRunner.manager.save(TodoPrivate, todoData);
+                    }
                 } else {
-                    await queryRunner.manager.save(TodoPrivate, todoData);
+                    await this.deleteTodoItem(TodoPrivate, mbId, todoData.todoId, todoData.chName);
                 }
             }
             await queryRunner.commitTransaction();
@@ -126,7 +136,16 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
         }
     }
 
-    // 공통 삭제 로직
+    // 공통 삭제 로직 (멤버아이디, 투두아이디, 캐릭터명)
+    private async deleteTodoItem(entity, mbId: string, todoId: string, chName: string) {
+        await this.createQueryBuilder()
+            .delete()
+            .from(entity)
+            .where(`mb_id = :mbId AND todo_id = :todoId AND ch_name = :chName`, { mbId, todoId, chName })
+            .execute();
+    }
+
+    // 공통 삭제 로직 (멤버아이디, 투두아이디, 캐릭터명) + 날짜 조건
     private async deleteByConditions(entity: EntityTarget<any>, mbId: string, conditions: string, todoId: string, chName: string): Promise<void> {
         await this.createQueryBuilder()
             .delete()
@@ -135,6 +154,14 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
             .execute();
     }
 
+
+    /**
+     * todoType
+     * @todoType Varchar(255) 0: 하루 초기화
+     * @todoType Varchar(255) 1: 주간(월 초기화)
+     * @todoType Varchar(255) 2: 주간(목 초기화)
+     * @todoType Varchar(255) 3: 월간(1일 초기화)
+    */
 
     // 투두 타입별 완료된 프리셋이 있는지 검사 조건
     private getFilterConditions(): string {

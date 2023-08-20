@@ -10,7 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { ListItemInfo } from 'src/interface/todo';
+import { ChangeListItemInfo, ListItemInfo } from 'src/interface/todo';
 import { Logger } from 'winston';
 import { TodoService } from './todo.service';
 
@@ -19,7 +19,7 @@ export class TodoController {
   constructor(
     private readonly todoService: TodoService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   @Get('/getTodo')
   @Throttle(100, 10)
@@ -55,7 +55,7 @@ export class TodoController {
   @UseGuards(AuthGuard('jwt'))
   public async setNewPreset(
     @Request() req,
-    @Body('todo_private') todoPrivate: ListItemInfo[],
+    @Body('todo_private') todoPrivate: ChangeListItemInfo[],
   ) {
     return this.todoService.setNewPreset(req.user.mbId, todoPrivate);
   }

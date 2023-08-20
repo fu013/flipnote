@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, Dispatch, SetStateAction } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -46,26 +46,28 @@ const CustomListItem = styled.div<{ checked: boolean }>((props) => ({
 
 /**
  * 메인 공통 인자
- * @param {readonly ListItemInfo[]} a: 선택된 데이터 리스트
- * @param {readonly ListItemInfo[]} b: 옮길 방향에 존재하는 데이터 리스트
+ * @param {ListItemInfo[]} a: 선택된 데이터 리스트
+ * @param {ListItemInfo[]} b: 옮길 방향에 존재하는 데이터 리스트
  */
 
-const not = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
-  return a.filter(
+const not = (a: ListItemInfo[], b: ListItemInfo[]) => {
+  const newList: ListItemInfo[] = a.filter(
     (value) => b.findIndex((item) => item.todoId === value.todoId) === -1
   );
+  return newList;
 };
+
 // checked 배열안의 값들이 left나 right 배열에 존재하는 값인지 유효성 검사를 마친 후 새 배열을 반환 / intersection: 교집합
 const intersection = (
-  a: readonly ListItemInfo[],
-  b: readonly ListItemInfo[]
+  a: ListItemInfo[],
+  b: ListItemInfo[]
 ) => {
   return a.filter(
     (value) => b.findIndex((item) => item.todoId === value.todoId) !== -1
   );
 };
 
-const union = (a: readonly ListItemInfo[], b: readonly ListItemInfo[]) => {
+const union = (a: ListItemInfo[], b: ListItemInfo[]) => {
   return [...a, ...not(b, a)];
 };
 
@@ -86,10 +88,15 @@ export const TodoList = () => {
     charName: string,
     presetType: string | number
   ) => {
-    return array.filter(
-      (item) =>
-        item.chName === charName && item.todoType === presetType.toString()
-    );
+    const filteredArray = array
+      .filter(
+        (item) => item.chName === charName && item.todoType === presetType.toString()
+      )
+      .map((item, index) => ({
+        ...item,
+        orderNo: index,
+      }));
+    return filteredArray;
   };
 
   useEffect(() => {
@@ -119,15 +126,17 @@ export const TodoList = () => {
       // checkd 리스트에 존재하면 해당 id의 아이템을 제거
       newChecked.splice(currentIndex, 1);
     }
+    // 체크박스로 옮길 아이템들의 정렬 번호를, 원래 속해있었던 배열의 순서대로 유지
+    newChecked.sort((a, b) => a.orderNo - b.orderNo);
     setChecked(newChecked);
   };
 
   // 체크 개수 개수하기
-  const numberOfChecked = (items: readonly ListItemInfo[]) =>
+  const numberOfChecked = (items: ListItemInfo[]) =>
     intersection(checked, items).length;
 
   // 전체 체크박스 토글
-  const handleToggleAll = (items: readonly ListItemInfo[]) => () => {
+  const handleToggleAll = (items: ListItemInfo[]) => () => {
     if (numberOfChecked(items) === items.length) {
       setChecked(not(checked, items));
     } else {
@@ -135,18 +144,41 @@ export const TodoList = () => {
     }
   };
 
+  const updateListsAndChecked = (
+    source: ListItemInfo[],
+    destination: ListItemInfo[],
+    sourceChecked: ListItemInfo[],
+    setSource: Dispatch<SetStateAction<ListItemInfo[]>>,
+    setDestination: Dispatch<SetStateAction<ListItemInfo[]>>,
+    setChecked: Dispatch<SetStateAction<ListItemInfo[]>>
+  ) => {
+    const newDestination = [...destination, ...sourceChecked];
+    const updatedDestination = newDestination.map((item, index) => ({
+      ...item,
+      orderNo: index,
+    }));
+
+    const updatedSource = not(source, sourceChecked);
+    const updatedChecked = not(sourceChecked, sourceChecked);
+
+    const updatedSourceWithOrder = updatedSource.map((item, index) => ({
+      ...item,
+      orderNo: index,
+    }));
+
+    setDestination(updatedDestination);
+    setSource(updatedSourceWithOrder);
+    setChecked(updatedChecked);
+  };
+
   // 왼쪽 리스트 => 오른쪽 리스트로 옮기기
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
-    setChecked(not(checked, leftChecked));
+    updateListsAndChecked(left, right, leftChecked, setLeft, setRight, setChecked);
   };
 
   // 오른쪽 리스트 => 왼쪽 리스트로 옮기기
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
-    setChecked(not(checked, rightChecked));
+    updateListsAndChecked(right, left, rightChecked, setRight, setLeft, setChecked);
   };
 
   const handleOpenPresetModal = () => {
@@ -157,7 +189,9 @@ export const TodoList = () => {
     setPresetModalOpen(false);
   };
 
-  const customList = (title: ReactNode, items: readonly ListItemInfo[]) => (
+
+
+  const customList = (title: ReactNode, items: ListItemInfo[]) => (
     <Card>
       <CardHeader
         sx={{
@@ -251,7 +285,7 @@ export const TodoList = () => {
       <div style={{ transform: "translateY(-50%)" }}>
         <div>
           <Button variant="contained" onClick={handleOpenPresetModal}>
-            새 프리셋 등록
+            프리셋 등록 또는 삭제
           </Button>
           <SimpleModal
             open={presetModalOpen}

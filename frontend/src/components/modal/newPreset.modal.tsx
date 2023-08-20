@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { userInfoAtom } from "services/recoil/auth";
 import { presetTypeAtom } from "services/recoil/presetType";
-import { ListItemInfo } from "services/interfaces/todo.interface";
+import { ListItemInfo, changeListItemInfo } from "services/interfaces/todo.interface";
 import { v4 as uuidv4 } from "uuid";
 import { useTodo_h } from "services/hooks/todo.hook";
 import styled from "@emotion/styled";
@@ -77,11 +77,15 @@ const SimpleModal = ({
   const charName = useRecoilValue(charActiveNameAtom);
   const userInfo = useRecoilValue(userInfoAtom);
   const presetType = useRecoilValue(presetTypeAtom);
-  const [newPreset, setNewPreset] = useState<ListItemInfo[]>([]);
+  const [newPreset, setNewPreset] = useState<changeListItemInfo[]>([]);
   const useTodoH = useTodo_h();
   const useNewPreset = useTodoH.useNewPreset();
-  const allTodo = [...todo, ...todo_c];
-  const [checked, setChecked] = useState([]);
+  const allTodo = [...todo, ...todo_c].map(item => ({
+    ...item,
+    isDelete: false,
+  }));
+  const [checked, setChecked] = useState<string[]>([]);
+
 
   useEffect(() => {
     setNewPreset(allTodo);
@@ -91,7 +95,8 @@ const SimpleModal = ({
     if (newPresetTitle.trim() === "") {
       return;
     }
-    const newPresetItem: ListItemInfo = {
+    const newPresetItem: changeListItemInfo = {
+      orderNo: newPreset.length,
       todoId: uuidv4(),
       todoName: newPresetTitle,
       todoType: presetType.toString(),
@@ -99,6 +104,7 @@ const SimpleModal = ({
       mbId: userInfo.mbId,
       chName: charName,
       createdDate: nowDate(),
+      isDelete: false,
     };
     setNewPreset((prevState) => [...prevState, newPresetItem]);
     setNewPresetTitle("");
@@ -112,13 +118,28 @@ const SimpleModal = ({
   const handleToggle = (todoId: string) => () => {
     const currentIndex = checked.indexOf(todoId);
     const newChecked = [...checked];
-
     if (currentIndex === -1) {
       newChecked.push(todoId);
     } else {
       newChecked.splice(currentIndex, 1);
     }
+    const updatedPreset = newPreset.map(item => {
+      if (item.todoId === todoId) {
+        return {
+          ...item,
+          isDelete: true,
+        };
+      }
+      return item;
+    });
+    setNewPreset(updatedPreset);
     setChecked(newChecked);
+  };
+
+  const handleKeyPress = (e: any) => {
+    if (e.key === 'Enter') {
+      handleAddPreset();
+    }
   };
 
   return (
@@ -129,39 +150,44 @@ const SimpleModal = ({
             type="text"
             value={newPresetTitle}
             onChange={(e) => setNewPresetTitle(e.target.value)}
-            placeholder="새 프리셋 추가"
+            placeholder="새 프리셋 추가(enter)"
+            onKeyDown={(e: any) => handleKeyPress(e)}
           />
           <Button
             sx={{ marginLeft: ".5rem" }}
             variant="contained"
-            onClick={(e: any) => handleAddPreset()}
+            onClick={() => handleAddPreset()}
           >
             추가
           </Button>
         </div>
         <List sx={{ width: "100%", height: "57.5rem", overflowY: "auto" }}>
           {newPreset.map((item, index) => (
-            <StyledListItem
-              key={index}
-              secondaryAction={
-                <Checkbox
-                  edge="end"
-                  onChange={handleToggle(item.todoId)}
-                  checked={checked.indexOf(item.todoId) !== -1}
-                />
-              }
-            >
-              <ListItemAvatar>
-                <StyledAvatar>
-                  {/* <ListCharImage src={item.chImage} alt="없음" /> */}
-                </StyledAvatar>
-              </ListItemAvatar>
-              <ListItemText primary={item.todoName} />
-            </StyledListItem>
+            !item.isDelete ? (
+              <StyledListItem
+                key={index}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    onClick={handleToggle(item.todoId)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemAvatar>
+                  <StyledAvatar>
+                    {/* <ListCharImage src={item.chImage} alt="없음" /> */}
+                  </StyledAvatar>
+                </ListItemAvatar>
+                <ListItemText primary={item.todoName} />
+              </StyledListItem>
+            ) : null
           ))}
         </List>
         <div style={{ display: "flex" }}>
           <Button
+            sx={{ marginLeft: ".5rem" }}
             variant="contained"
             onClick={() => useNewPreset.mutateAsync(newPreset)}
           >
