@@ -33,6 +33,7 @@ const CustomGridBox = styled(GridBox)(() => ({
 
 const CustomListItem = styled.div<{ checked: boolean }>((props) => ({
   backgroundColor: props.checked ? "skyblue" : "white",
+  borderBottom: "1px solid #ddd",
   display: "flex",
   alignItems: "center",
   padding: "8px",
@@ -79,6 +80,7 @@ export const TodoList = () => {
   const [left, setLeft] = useRecoilState(leftState);
   const [right, setRight] = useRecoilState(rightState);
   const [checked, setChecked] = useRecoilState(checkedState);
+  const [draggedItem, setDraggedItem] = useState<ListItemInfo | null>(null);
   const [presetModalOpen, setPresetModalOpen] = useState(false);
   const useTodoH = useTodo_h();
   const useUpdateTodo = useTodoH.useUpdateTodo();
@@ -144,6 +146,7 @@ export const TodoList = () => {
     }
   };
 
+  // 체크된 배열 관리, 배열 왼쪽 <> 오른쪽 옮기기 기능
   const updateListsAndChecked = (
     source: ListItemInfo[],
     destination: ListItemInfo[],
@@ -181,17 +184,51 @@ export const TodoList = () => {
     updateListsAndChecked(right, left, rightChecked, setRight, setLeft, setChecked);
   };
 
+  // 프리셋 모달 활성화
   const handleOpenPresetModal = () => {
     setPresetModalOpen(true);
   };
 
+  // 프리셋 모달 비활성화
   const handleClosePresetModal = () => {
     setPresetModalOpen(false);
   };
 
+  // 드래그 시작 시 호출되는 함수
+  const handleDragStart = (item: ListItemInfo) => {
+    setDraggedItem(item);
+  };
 
+  // 드래그 중인 아이템 위에 커서가 올라갔을 때 호출되는 함수
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>, item: ListItemInfo, isLeft: boolean) => {
+    if (draggedItem === null || draggedItem.todoId === item.todoId) {
+      return;
+    }
+    const updatedItems = isLeft ? [...left] : [...right];
+    const draggedIndex = isLeft ? left.findIndex((i) => i.todoId === draggedItem.todoId) : right.findIndex((i) => i.todoId === draggedItem.todoId);
+    const targetIndex = isLeft ? left.findIndex((i) => i.todoId === item.todoId) : right.findIndex((i) => i.todoId === item.todoId);
 
-  const customList = (title: ReactNode, items: ListItemInfo[]) => (
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      const [movedItem] = updatedItems.splice(draggedIndex, 1);
+      updatedItems.splice(targetIndex, 0, { ...movedItem, orderNo: item.orderNo });
+      const updatedItemsWithOrder = updatedItems.map((item, index) => ({
+        ...item,
+        orderNo: index,
+      }));
+      if (isLeft) {
+        setLeft(updatedItemsWithOrder);
+      } else {
+        setRight(updatedItemsWithOrder);
+      }
+    }
+  };
+
+  // 드래그 앤 드롭이 끝났을 때 호출되는 함수
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+  };
+
+  const customList = (title: ReactNode, items: ListItemInfo[], isLeft: boolean) => (
     <Card>
       <CardHeader
         sx={{
@@ -248,8 +285,16 @@ export const TodoList = () => {
             <CustomListItem
               key={item.todoId}
               role="listitem"
+              draggable // 드래그 가능한 요소로 설정
+              onDragStart={() => handleDragStart(item)}
+              onDragEnter={(e) => handleDragEnter(e, item, isLeft)}
+              onDragEnd={handleDragEnd}
               onClick={handleToggle(item.todoId)}
-              style={{ borderBottom: "1px solid #ddd" }}
+              style={{
+                borderColor: draggedItem?.todoId === item.todoId ? "lightblue" : "transparent",
+                borderLeftWidth: "4px", // 변경된 부분: 왼쪽에 4px의 테두리 추가
+                borderLeftStyle: "solid", // 변경된 부분: 왼쪽 테두리를 실선으로 설정
+              }}
               checked={
                 checked.findIndex((c) => c.todoId === item.todoId) !== -1
               } // 체크 상태를 전달
@@ -302,7 +347,7 @@ export const TodoList = () => {
         alignItems="center"
         sx={{ "& *": { fontFamily: "Noto Sans, sans-serif !important" } }}
       >
-        <Grid item>{customList("숙제 프리셋", left)}</Grid>
+        <Grid item>{customList("숙제 프리셋", left, true)}</Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Button
@@ -331,11 +376,11 @@ export const TodoList = () => {
                 useUpdateTodo.mutateAsync({ left: left, right: right })
               }
             >
-              내역 저장
+              현재 프리셋 저장
             </Button>
           </Grid>
         </Grid>
-        <Grid item>{customList("숙제 완료 내역", right)}</Grid>
+        <Grid item>{customList("숙제 완료 내역", right, false)}</Grid>
       </Grid>
     </CustomGridBox>
   );
