@@ -82,7 +82,12 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                 });
 
                 if (existingTodo) {
-                    await queryRunner.manager.update(TodoComplete, { todoId: todoData.todoId }, todoData);
+                    const currentDate = new Date();
+                    const updatedTodoData = {
+                        ...todoData,
+                        completedDate: currentDate
+                    };
+                    await queryRunner.manager.update(TodoComplete, { todoId: todoData.todoId }, updatedTodoData);
                 } else {
                     await queryRunner.manager.save(TodoComplete, todoData);
                 }
@@ -139,7 +144,16 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                 OR
                 (tp.todoType = 1 AND (tc.todoId IS NULL OR (tc.todoId IS NOT NULL AND DATE(tc.completedDate) < CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)))
                 OR 
-                (tp.todoType = 2 AND (tc.todoId IS NULL OR (tc.todoId IS NOT NULL AND DATE(tc.completedDate) < CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 4 DAY)))
+                (
+                    tp.todoType = 2 AND (
+                        tc.todoId IS NULL OR (
+                            tc.todoId IS NOT NULL AND (
+                                DATE(tc.completedDate) < 
+                                CURDATE() - INTERVAL CASE WHEN WEEKDAY(CURDATE()) >= 4 THEN WEEKDAY(CURDATE()) - 3 ELSE WEEKDAY(CURDATE()) + 4 END DAY
+                            )
+                        )
+                    )
+                )
                 OR
                 (tp.todoType = 3 AND (tc.todoId IS NULL OR (tc.todoId IS NOT NULL AND (DATE(tc.completedDate) < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') OR DATE(tc.completedDate) > CURRENT_DATE))))
             )`;
@@ -153,7 +167,14 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
                 OR
                 (tp.todo_type = 1 AND (tc.todo_id IS NOT NULL AND DATE(tc.completed_date) >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY))
                 OR 
-                (tp.todo_type = 2 AND (tc.todo_id IS NOT NULL AND DATE(tc.completed_date) >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 4 DAY))
+                (
+                    tp.todo_type = 2 AND (
+                        tc.todo_id IS NOT NULL AND (
+                            DATE(tc.completed_date) >= 
+                            CURDATE() - INTERVAL CASE WHEN WEEKDAY(CURDATE()) >= 4 THEN WEEKDAY(CURDATE()) - 3 ELSE WEEKDAY(CURDATE()) + 4 END DAY
+                        )
+                    )
+                )
                 OR
                 (tp.todo_type = 3 AND (tc.todo_id IS NOT NULL AND (DATE(tc.completed_date) >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND DATE(tc.completed_date) <= CURDATE())))
             )`;
@@ -168,7 +189,12 @@ export class TodoPrivateRepository extends Repository<TodoPrivate> {
             return `(todo_id IS NOT NULL AND DATE(completed_date) >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)`;
         }
         if (todoType === "2") {
-            return `(todo_id IS NOT NULL AND DATE(completed_date) >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 4 DAY)`;
+            return `(
+                    todo_id IS NOT NULL AND (
+                        DATE(completed_date) >= 
+                        CURDATE() - INTERVAL CASE WHEN WEEKDAY(CURDATE()) >= 4 THEN WEEKDAY(CURDATE()) - 3 ELSE WEEKDAY(CURDATE()) + 4 END DAY
+                    )
+                )`;
         }
         if (todoType === "3") {
             return `(todo_id IS NOT NULL AND (DATE(completed_date) >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND DATE(completed_date) <= CURDATE()))`;
