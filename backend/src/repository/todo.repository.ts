@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { TodoComplete } from 'src/entity/todo.complete.entity';
 import { TodoPrivate } from 'src/entity/todo.private.entity';
 import { ChangeListItemInfo, ListItemInfo } from 'src/interface/todo';
+import { getCurrentTimeFormatted } from 'src/lib/getCurrentTimeFormatted';
+import { writeLogByMbId } from 'src/lib/user.log.setting';
 import { DataSource, EntityRepository, EntityTarget, Repository } from 'typeorm';
 
 @Injectable()
@@ -122,6 +124,7 @@ export class TodoRepository extends Repository<TodoPrivate> {
                         await queryRunner.manager.update(TodoPrivate, { mbId: mbId, todoId: todoData.todoId }, todoData);
                     } else {
                         await queryRunner.manager.save(TodoPrivate, todoData);
+                        await writeLogByMbId(mbId, `[${todoData.chName}]: ${todoData.todoName} 프리셋 추가 / ${getCurrentTimeFormatted()}`);
                     }
                 } else {
                     await this.deleteTodoItem(TodoPrivate, mbId, todoData.todoId, todoData.chName);

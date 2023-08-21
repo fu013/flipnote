@@ -16,6 +16,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import path from 'path';
 import { ExcelModule } from './excel/excel.module';
 import { TodoModule } from './todo/todo.module';
+import { LogModule } from './log/log.module';
 
 /* NESTJS에서 앱은 여러개의 모듈로 구성되어있음 */
 @Module({
@@ -60,13 +61,13 @@ import { TodoModule } from './todo/todo.module';
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('Dogrimong_Server', {
+            nestWinstonModuleUtilities.format.nestLike('mapleflipnote', {
               prettyPrint: true,
             }),
           ),
         }),
         new winston.transports.File({
-          dirname: 'logs',
+          dirname: 'logs/server',
           filename: `${new Date().toISOString().slice(0, 10)}.error.log`,
           level: 'error',
           format: winston.format.combine(
@@ -79,6 +80,7 @@ import { TodoModule } from './todo/todo.module';
     CrawlerModule,
     CharModule,
     TodoModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [],
