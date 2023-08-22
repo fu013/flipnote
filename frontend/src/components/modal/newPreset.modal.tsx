@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button, Checkbox, ListItem, Modal, Paper } from "@mui/material";
 import { nowDate } from "lib/getNowDate";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { userInfoAtom } from "services/recoil/auth";
 import { presetTypeAtom } from "services/recoil/presetType";
@@ -16,7 +16,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ListCharImage } from "components/main/presetStyle";
+import { logAtom } from "services/recoil/logAtom";
+/* import { io } from 'socket.io-client';
+import { SERVER_URL } from 'config/constants.config';
+import { ListCharImage } from "components/main/presetStyle"; */
+
 
 const StyledModal = styled(Modal)`
   position: fixed;
@@ -86,6 +90,51 @@ const SimpleModal = ({
   }));
   const [checked, setChecked] = useState<string[]>([]);
 
+  // 소켓
+  const [logs, setLogs] = useRecoilState(logAtom);
+  const [socket, setSocket] = useState<any>();
+  const [message, setMessage] = useState('');
+  const [receivedMessage, setReceivedMessage] = useState('');
+
+  useEffect(() => {
+
+    // 웹 소켓 연결
+    const newSocket = new WebSocket('ws://localhost:29000/logActive');
+    newSocket.addEventListener('open', () => {
+      console.log('Connected to WebSocket server');
+      // 클라이언트 정보를 JSON 형식으로 인코딩하여 서버로 전송
+      const clientInfo = {
+        otherData: 'some data', // 다른 필요한 데이터도 추가할 수 있음
+      };
+
+      newSocket.send(JSON.stringify(clientInfo));
+    });
+    newSocket.addEventListener('message', (event) => {
+      setReceivedMessage(event.data);
+    });
+
+    // 컴포넌트 언마운트 시 웹 소켓 연결 해제
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    // 메시지 수신 이벤트 핸들러 등록
+    if (socket) {
+      socket.addEventListener('message', (event: any) => {
+        setReceivedMessage(event.data);
+      });
+    }
+  }, [socket]);
+
+  const handleSendMessage = () => {
+    if (socket) {
+      socket.send(message); // 옵션을 지정하지 않음
+      setMessage('');
+    }
+  };
+
 
   useEffect(() => {
     setNewPreset(allTodo);
@@ -145,6 +194,16 @@ const SimpleModal = ({
   return (
     <StyledModal open={open} onClose={onClose}>
       <ModalPaper>
+        <div>
+          <h1>WebSocket Example</h1>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button onClick={handleSendMessage}>Send Message</button>
+          <p>Received Message: {receivedMessage}</p>
+        </div>
         <div style={{ display: "flex" }}>
           <PresetInput
             type="text"

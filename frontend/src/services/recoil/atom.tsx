@@ -1,7 +1,5 @@
 import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
 import { ListItemInfo } from "services/interfaces/todo.interface";
-const { persistAtom } = recoilPersist();
 
 
 // 미완료 숙제

@@ -30,6 +30,20 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+/* import { io } from 'socket.io-client';
+import { SERVER_URL } from "config/constants.config";
+const socket = io(SERVER_URL, {
+  path: '/logActive'
+});
+
+socket.on('connect', () => {
+  console.log('Connected to WebSocket server');
+});
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from WebSocket server');
+}); */
+
 
 interface Props {
   window?: () => Window;
