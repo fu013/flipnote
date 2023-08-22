@@ -4,12 +4,12 @@ import { AppModule } from './app.module';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { CLIENT_URL, PORT, SESSION_SECRET_KEY } from './config/config';
-import { WsAdapter } from '@nestjs/platform-ws';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 /* import rateLimit from 'express-rate-limit'; */
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useWebSocketAdapter(new WsAdapter(app));
+  app.useWebSocketAdapter(new IoAdapter(app));
   app.enableCors({
     origin: CLIENT_URL,
     credentials: true,
