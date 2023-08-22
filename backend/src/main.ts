@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { CLIENT_URL, PORT, SESSION_SECRET_KEY } from './config/config';
-import rateLimit from 'express-rate-limit';
+import { WsAdapter } from '@nestjs/platform-ws';
+/* import rateLimit from 'express-rate-limit'; */
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useWebSocketAdapter(new WsAdapter(app));
   app.enableCors({
     origin: CLIENT_URL,
     credentials: true,
@@ -29,11 +31,11 @@ async function bootstrap() {
         maxAge: 60000,
       },
     }),
-    rateLimit({ // 요청 제한과 IP 차단: 100회 / 5분, IP 주소로 제한
+    /* rateLimit({ // 요청 제한과 IP 차단: 100회 / 5분, IP 주소로 제한
       windowMs: 5 * 60 * 1000, // 5분
       max: 1000, // 최대 허용 횟수
       keyGenerator: (req) => req.ip, // IP 주소를 기준으로 제한
-    }),
+    }), */
     cookieParser()
   );
   await app.listen(PORT);

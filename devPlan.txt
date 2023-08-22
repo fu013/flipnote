@@ -55,3 +55,117 @@
 14. 캐릭터 갱신 기능(최신화)
 
 15. 캐릭터 목록 등록시 리스트 아래에 등록되게 하고, 바로 액티브 되는 현상 막고, 기존 액티브 유지하게 하기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------
+
+
+
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import * as http from 'http';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const server = http.createServer(app);
+  const io = require('socket.io')(server);
+
+  io.on('connection', (socket) => {
+    console.log('Client connected');
+
+    socket.on('registerPreset', (presetName) => {
+      const logMessage = `User registered a preset: ${presetName}`;
+      io.emit('newLog', logMessage);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Client disconnected');
+    });
+  });
+
+  await app.listen(3000);
+}
+bootstrap();
+
+
+
+Client
+
+-----
+
+
+
+import React, { useState } from 'react';
+import './App.css';
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:3000'); // Change to your server address
+
+function App() {
+  const [presetName, setPresetName] = useState('');
+  const [logs, setLogs] = useState([]);
+
+  socket.on('newLog', (logMessage) => {
+    setLogs((prevLogs) => [...prevLogs, logMessage]);
+  });
+
+  const handleRegisterPreset = () => {
+    socket.emit('registerPreset', presetName);
+  };
+
+  return (
+    <div className="App">
+      <h1>Socket.io Example</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Enter preset name"
+          value={presetName}
+          onChange={(e) => setPresetName(e.target.value)}
+        />
+        <button onClick={handleRegisterPreset}>Register Preset</button>
+      </div>
+      <div>
+        <h2>Logs:</h2>
+        <ul>
+          {logs.map((log, index) => (
+            <li key={index}>{log}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export default App;
