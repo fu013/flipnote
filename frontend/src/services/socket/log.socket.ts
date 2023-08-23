@@ -20,9 +20,15 @@ export const socketGetLogContent = () => {
   });
 };
 
-export const socketRequestLog = () => {
-  socket.emit("requestLog");
+export const socketRequestLog = async () => {
+  return new Promise((resolve) => {
+    socket.on("logContent", (data) => {
+      resolve(data);
+    });
+    socket.emit("requestLog");
+  });
 };
+
 
 export const socketWriteLog = (logMessage: string | number) => {
   socket.emit("writeLog", logMessage);

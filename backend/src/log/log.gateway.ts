@@ -23,8 +23,7 @@ import { writeLogByMbId } from 'src/lib/user.log.setting';
 })
 @WebSocketGateway(CLIENT_PORT, { transports: ['websocket'] })
 export class LogGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   // Logger Setting
   private logger = new Logger('Gateway');
 

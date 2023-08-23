@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { socketGetLogContent, socketRequestLog } from "../socket/log.socket";
+import { socketRequestLog } from "../socket/log.socket";
 
 const QUERY_KEY = {
   log: "log",
@@ -7,13 +7,9 @@ const QUERY_KEY = {
 
 // 캐싱 :: 로그 관리
 export const useFetchLog = () => {
-  const { data, isLoading } = useQuery([QUERY_KEY.log], () => {
-    return new Promise((resolve) => {
-      socketGetLogContent((logData) => {
-        resolve(logData); // 데이터를 Promise로 반환
-      });
-      socketRequestLog();
-    });
+  const { data, isLoading } = useQuery([QUERY_KEY.log], async () => {
+    const logData = await socketRequestLog(); // Wait for the socket request to complete
+    return logData;
   });
 
   if (typeof data === "undefined") {
