@@ -16,13 +16,14 @@ axios 요청에서 응답에 return을 누락하면 해당 비동기 함수는 u
 // 캐싱 :: 캐릭터 프리셋 목록
 export const useFetchChar = () => {
   const myAxios = useCharacter_a();
-  const { data, isLoading } = useQuery([QUERY_KEY.char], () => myAxios.getCharacter());
-  if (typeof data === 'undefined') {
-    throw new Error('데이터를 불러올 수 없습니다.');
+  const { data, isLoading } = useQuery([QUERY_KEY.char], () =>
+    myAxios.getCharacter()
+  );
+  if (typeof data === "undefined") {
+    throw new Error("데이터를 불러올 수 없습니다.");
   }
   return {
     char: data,
     char_isLoading: isLoading,
   };
 };
-

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import customErrorToast from "lib/customErrorToast";
 import { useAxiosCustom } from "services/setting/axios.custom";
 
@@ -30,8 +31,8 @@ export const useCharacter_a = () => {
     try {
       const res = await instance.delete("/char/delCharacter", {
         params: {
-          charName: name
-        }
+          charName: name,
+        },
       });
       return res.data;
     } catch (err: any) {

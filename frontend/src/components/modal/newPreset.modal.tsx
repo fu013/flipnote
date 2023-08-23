@@ -6,7 +6,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { charActiveNameAtom } from "services/recoil/charActive";
 import { userInfoAtom } from "services/recoil/auth";
 import { presetTypeAtom } from "services/recoil/presetType";
-import { ListItemInfo, changeListItemInfo } from "services/interfaces/todo.interface";
+import {
+  ListItemInfo,
+  changeListItemInfo,
+} from "services/interfaces/todo.interface";
 import { v4 as uuidv4 } from "uuid";
 import { useTodo_h } from "services/hooks/todo.hook";
 import styled from "@emotion/styled";
@@ -17,22 +20,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { logAtom } from "services/recoil/logAtom";
-import { io } from 'socket.io-client';
-import { SERVER_URL } from 'config/constants.config';
 import { ListCharImage } from "components/main/presetStyle";
-
-
-const socket = io(SERVER_URL, {
-  path: '/logActive'
-});
-
-socket.on('connect', () => {
-  console.log('Connected to WebSocket server');
-});
-
-socket.on('disconnect', () => {
-  console.log('Disconnected from WebSocket server');
-});
 
 const StyledModal = styled(Modal)`
   position: fixed;
@@ -96,14 +84,11 @@ const SimpleModal = ({
   const [newPreset, setNewPreset] = useState<changeListItemInfo[]>([]);
   const useTodoH = useTodo_h();
   const useNewPreset = useTodoH.useNewPreset();
-  const allTodo = [...todo, ...todo_c].map(item => ({
+  const allTodo = [...todo, ...todo_c].map((item) => ({
     ...item,
     isDelete: false,
   }));
   const [checked, setChecked] = useState<string[]>([]);
-
-  // 소켓
-  const [logs, setLogs] = useRecoilState(logAtom);
 
   useEffect(() => {
     setNewPreset(allTodo);
@@ -141,7 +126,7 @@ const SimpleModal = ({
     } else {
       newChecked.splice(currentIndex, 1);
     }
-    const updatedPreset = newPreset.map(item => {
+    const updatedPreset = newPreset.map((item) => {
       if (item.todoId === todoId) {
         return {
           ...item,
@@ -155,9 +140,8 @@ const SimpleModal = ({
   };
 
   const handleKeyPress = (e: any) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleAddPreset();
-      socket.emit('message', "hi hello");
     }
   };
 
@@ -181,15 +165,12 @@ const SimpleModal = ({
           </Button>
         </div>
         <List sx={{ width: "100%", height: "57.5rem", overflowY: "auto" }}>
-          {newPreset.map((item, index) => (
+          {newPreset.map((item, index) =>
             !item.isDelete ? (
               <StyledListItem
                 key={index}
                 secondaryAction={
-                  <IconButton
-                    edge="end"
-                    onClick={handleToggle(item.todoId)}
-                  >
+                  <IconButton edge="end" onClick={handleToggle(item.todoId)}>
                     <DeleteIcon />
                   </IconButton>
                 }
@@ -202,7 +183,7 @@ const SimpleModal = ({
                 <ListItemText primary={item.todoName} />
               </StyledListItem>
             ) : null
-          ))}
+          )}
         </List>
         <div style={{ display: "flex" }}>
           <Button

@@ -3,7 +3,6 @@ import { useRecoilValue } from "recoil";
 import { SERVER_URL } from "config/constants.config";
 import { accessTokenAtom } from "services/recoil/auth";
 import customToast from "lib/customToast";
-import { useNavigate } from "react-router-dom";
 
 // JWT 토큰 인증 ON/OFF 공통 Axios 요청훅
 export const useAxiosCustom = (auth: boolean): AxiosInstance => {
@@ -22,9 +21,12 @@ export const useAxiosCustom = (auth: boolean): AxiosInstance => {
       if (auth) {
         accessToken
           ? ((
-            config.headers as AxiosRequestHeaders
-          ).Authorization = `Bearer ${accessToken}`)
-          : customToast("로그인 상태에서만 이용할 수 있는 기능입니다.", "warning") && location.replace("/auth/login");
+              config.headers as AxiosRequestHeaders
+            ).Authorization = `Bearer ${accessToken}`)
+          : customToast(
+              "로그인 상태에서만 이용할 수 있는 기능입니다.",
+              "warning"
+            ) && window.location.replace("/auth/login");
       }
       return config;
     },

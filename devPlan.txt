@@ -1,6 +1,6 @@
 ## 개발 계획
 
-#### 환경설정
+### 환경설정
 - 배포는 오라클 클라우드로 결정! 상시 무료에 무료계정에서 돈나갈일이 없다는게 큰 장점인듯함.
 - aws를 쓰면 좋겠지만, 회사가 아닌이상에야 과금의 부담이 너무 커서, 회사 및 공부용으로만 일단 쓸듯하다.
 
@@ -56,116 +56,18 @@
 
 15. 캐릭터 목록 등록시 리스트 아래에 등록되게 하고, 바로 액티브 되는 현상 막고, 기존 액티브 유지하게 하기
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
------------
-
-
-
-
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as http from 'http';
-
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const server = http.createServer(app);
-  const io = require('socket.io')(server);
-
-  io.on('connection', (socket) => {
-    console.log('Client connected');
-
-    socket.on('registerPreset', (presetName) => {
-      const logMessage = `User registered a preset: ${presetName}`;
-      io.emit('newLog', logMessage);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('Client disconnected');
-    });
-  });
-
-  await app.listen(3000);
-}
-bootstrap();
-
-
-
-Client
-
 -----
 
+# 소켓 로그 기능에 대해 생각해보자. / 간단한 과정으로 구현될 것 같은 느낌이 들긴한다..
 
+1. 인덱스 페이지에 접속시, socket을 connect하고, connect될때 전체 로그 데이터를 recoilState에 보관한다. (로그 데이터는 많은양을 필요로하고, 페이지간 공유는 필요없고, 같은 페이지내 컴포넌트만 로그 데이터를 공유하면 되므로, 로컬 스토리지 보관 기능은 키지 않는다.)
 
-import React, { useState } from 'react';
-import './App.css';
-import io from 'socket.io-client';
+- react-query에 보관하는 방법도 고려, 로그가 일반 조회시에는 변할일은 크게없기떄문에, stale한 상태에서 소켓 재요청이 없는 react-query가 방법이 좋을수도있다.
 
-const socket = io.connect('http://localhost:3000'); // Change to your server address
+2. 이후, 클라이언트에서 INSERT, UPDATE, DELETE 등의 작업을 서버로 요청하고 정상적인 처리를 완료 했을 경우, 
 
-function App() {
-  const [presetName, setPresetName] = useState('');
-  const [logs, setLogs] = useState([]);
+3. 서버에서 소켓 (로깅)메세지를 클라이언트에게 전송하며, 서버 로그파일에 write
 
-  socket.on('newLog', (logMessage) => {
-    setLogs((prevLogs) => [...prevLogs, logMessage]);
-  });
+4. 그럼 클라이언트 state단에서 로그 메세지를 갱신함
 
-  const handleRegisterPreset = () => {
-    socket.emit('registerPreset', presetName);
-  };
-
-  return (
-    <div className="App">
-      <h1>Socket.io Example</h1>
-      <div>
-        <input
-          type="text"
-          placeholder="Enter preset name"
-          value={presetName}
-          onChange={(e) => setPresetName(e.target.value)}
-        />
-        <button onClick={handleRegisterPreset}>Register Preset</button>
-      </div>
-      <div>
-        <h2>Logs:</h2>
-        <ul>
-          {logs.map((log, index) => (
-            <li key={index}>{log}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-export default App;
+5. 인덱스 페이지가 언마운트될때, 소켓 연결을 해제함

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import customErrorToast from "lib/customErrorToast";
 import customToast from "lib/customToast";
 import { ListItemInfo } from "services/interfaces/todo.interface";
@@ -30,7 +31,10 @@ export const useTodo_a = () => {
 
   const setTodoSync = async (left: ListItemInfo[], right: ListItemInfo[]) => {
     try {
-      const res = await instance.post("/todo/setTodoSync", { todo_private: left, todo_complete: right });
+      const res = await instance.post("/todo/setTodoSync", {
+        todo_private: left,
+        todo_complete: right,
+      });
       res.data.message ? customToast(res.data.message, "success") : false;
       return res.data;
     } catch (err: any) {
@@ -42,7 +46,9 @@ export const useTodo_a = () => {
 
   const addNewPreset = async (newPreset: ListItemInfo[]) => {
     try {
-      const res = await instance.post("/todo/setNewPreset", { todo_private: newPreset });
+      const res = await instance.post("/todo/setNewPreset", {
+        todo_private: newPreset,
+      });
       res.data.message ? customToast(res.data.message, "success") : false;
       return res.data;
     } catch (err: any) {

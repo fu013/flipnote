@@ -1,6 +1,14 @@
 import styled from "@emotion/styled";
-import { useRecoilValue } from "recoil";
-import { logAtom } from "services/recoil/logAtom";
+import { useEffect } from "react";
+import { useFetchLog } from "services/react-query/log.socket.query";
+import {
+  socketConnectOff,
+  socketConnectOn,
+  socketRequestLog,
+  socketWriteLog,
+} from "services/socket/log.socket";
+
+socketConnectOn();
 
 const LogBox = styled.div`
   border: 1px solid #0033ff;
@@ -12,14 +20,24 @@ const LogBox = styled.div`
   font-size: 1.2rem;
   overflow-y: auto;
 `;
+
 const RecordLogBox = () => {
-  const logs = useRecoilValue(logAtom);
+  const { log, log_isLoading } = useFetchLog();
+
+  // 컴포넌트 마운트 시 소켓 연결
+  useEffect(() => {
+    // 컴포넌트 언마운트 시 소켓 연결 해제
+    return () => {
+      socketConnectOff();
+    };
+  }, []);
+
   return (
-    <LogBox>
-      {logs.map((log, index) => (
-        <p key={index}>{log}</p>
-      ))}
-    </LogBox>
+    <div>
+      <LogBox>{JSON.stringify(log)}</LogBox>
+      <button onClick={() => socketRequestLog()}>Request Log</button>
+      <button onClick={() => socketWriteLog("Hello!")}>Write Log</button>
+    </div>
   );
 };
 

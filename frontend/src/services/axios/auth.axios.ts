@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import axios from "axios";
 import { REFRESH_TOKEN_INTERVAL } from "config/constants.config";
 import customErrorToast from "lib/customErrorToast";

@@ -1,5 +1,11 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { ReactNode, useEffect, useState, Dispatch, SetStateAction } from "react";
+import {
+  ReactNode,
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -13,7 +19,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { leftState, rightState, checkedState } from "services/recoil/atom";
 import { ListItemInfo } from "services/interfaces/todo.interface";
 import styled from "@emotion/styled";
-import { GridBox, TypeTag } from "./presetStyle";
+import { GridBox } from "./presetStyle";
 import {
   useFetchTodo,
   useFetchTodoComplete,
@@ -59,10 +65,7 @@ const not = (a: ListItemInfo[], b: ListItemInfo[]) => {
 };
 
 // checked 배열안의 값들이 left나 right 배열에 존재하는 값인지 유효성 검사를 마친 후 새 배열을 반환 / intersection: 교집합
-const intersection = (
-  a: ListItemInfo[],
-  b: ListItemInfo[]
-) => {
+const intersection = (a: ListItemInfo[], b: ListItemInfo[]) => {
   return a.filter(
     (value) => b.findIndex((item) => item.todoId === value.todoId) !== -1
   );
@@ -92,7 +95,8 @@ export const TodoList = () => {
   ) => {
     const filteredArray = array
       .filter(
-        (item) => item.chName === charName && item.todoType === presetType.toString()
+        (item) =>
+          item.chName === charName && item.todoType === presetType.toString()
       )
       .map((item, index) => ({
         ...item,
@@ -176,12 +180,26 @@ export const TodoList = () => {
 
   // 왼쪽 리스트 => 오른쪽 리스트로 옮기기
   const handleCheckedRight = () => {
-    updateListsAndChecked(left, right, leftChecked, setLeft, setRight, setChecked);
+    updateListsAndChecked(
+      left,
+      right,
+      leftChecked,
+      setLeft,
+      setRight,
+      setChecked
+    );
   };
 
   // 오른쪽 리스트 => 왼쪽 리스트로 옮기기
   const handleCheckedLeft = () => {
-    updateListsAndChecked(right, left, rightChecked, setRight, setLeft, setChecked);
+    updateListsAndChecked(
+      right,
+      left,
+      rightChecked,
+      setRight,
+      setLeft,
+      setChecked
+    );
   };
 
   // 프리셋 모달 활성화
@@ -200,17 +218,28 @@ export const TodoList = () => {
   };
 
   // 드래그 중인 아이템 위에 커서가 올라갔을 때 호출되는 함수
-  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>, item: ListItemInfo, isLeft: boolean) => {
+  const handleDragEnter = (
+    event: React.DragEvent<HTMLDivElement>,
+    item: ListItemInfo,
+    isLeft: boolean
+  ) => {
     if (draggedItem === null || draggedItem.todoId === item.todoId) {
       return;
     }
     const updatedItems = isLeft ? [...left] : [...right];
-    const draggedIndex = isLeft ? left.findIndex((i) => i.todoId === draggedItem.todoId) : right.findIndex((i) => i.todoId === draggedItem.todoId);
-    const targetIndex = isLeft ? left.findIndex((i) => i.todoId === item.todoId) : right.findIndex((i) => i.todoId === item.todoId);
+    const draggedIndex = isLeft
+      ? left.findIndex((i) => i.todoId === draggedItem.todoId)
+      : right.findIndex((i) => i.todoId === draggedItem.todoId);
+    const targetIndex = isLeft
+      ? left.findIndex((i) => i.todoId === item.todoId)
+      : right.findIndex((i) => i.todoId === item.todoId);
 
     if (draggedIndex !== -1 && targetIndex !== -1) {
       const [movedItem] = updatedItems.splice(draggedIndex, 1);
-      updatedItems.splice(targetIndex, 0, { ...movedItem, orderNo: item.orderNo });
+      updatedItems.splice(targetIndex, 0, {
+        ...movedItem,
+        orderNo: item.orderNo,
+      });
       const updatedItemsWithOrder = updatedItems.map((item, index) => ({
         ...item,
         orderNo: index,
@@ -228,7 +257,11 @@ export const TodoList = () => {
     setDraggedItem(null);
   };
 
-  const customList = (title: ReactNode, items: ListItemInfo[], isLeft: boolean) => (
+  const customList = (
+    title: ReactNode,
+    items: ListItemInfo[],
+    isLeft: boolean
+  ) => (
     <Card>
       <CardHeader
         sx={{
@@ -291,7 +324,10 @@ export const TodoList = () => {
               onDragEnd={handleDragEnd}
               onClick={handleToggle(item.todoId)}
               style={{
-                borderColor: draggedItem?.todoId === item.todoId ? "lightblue" : "transparent",
+                borderColor:
+                  draggedItem?.todoId === item.todoId
+                    ? "lightblue"
+                    : "transparent",
                 borderLeftWidth: "4px", // 변경된 부분: 왼쪽에 4px의 테두리 추가
                 borderLeftStyle: "solid", // 변경된 부분: 왼쪽 테두리를 실선으로 설정
               }}
