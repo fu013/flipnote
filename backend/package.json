@@ -47,6 +47,7 @@
     "express-rate-limit": "^6.8.1",
     "express-session": "^1.17.3",
     "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.1",
     "lodash": "^4.17.21",
     "mapped-types": "^0.0.1",
     "mathjs": "^11.9.1",

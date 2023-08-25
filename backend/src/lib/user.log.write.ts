@@ -9,7 +9,6 @@ export const writeLogByMbId = async (
   const logFilePath = path.join(process.cwd(), `/logs/user/${mbId}.log`);
   try {
     const logDir = path.dirname(logFilePath);
-
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
     }

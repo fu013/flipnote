@@ -1,14 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect } from "react";
-import { useFetchLog } from "services/react-query/log.socket.query";
-import {
-  socketConnectOff,
-  socketConnectOn,
-  socketRequestLog,
-  socketWriteLog,
-} from "services/socket/log.socket";
-
-socketConnectOn();
+import { useSocket_h } from "services/socket/log.socket.union.hook";
 
 const LogBox = styled.div`
   border: 1px solid #0033ff;
@@ -22,21 +13,16 @@ const LogBox = styled.div`
 `;
 
 const RecordLogBox = () => {
-  const { log, log_isLoading } = useFetchLog();
-
-  // 컴포넌트 마운트 시 소켓 연결
-  useEffect(() => {
-    // 컴포넌트 언마운트 시 소켓 연결 해제
-    return () => {
-      socketConnectOff();
-    };
-  }, []);
+  const useSocketH = useSocket_h();
+  const log = useSocketH.log;
 
   return (
     <div>
       <LogBox>{JSON.stringify(log)}</LogBox>
-      <button onClick={() => socketRequestLog()}>Request Log</button>
-      <button onClick={() => socketWriteLog("Hello!")}>Write Log</button>
+      <button onClick={() => useSocketH.socketRequestLog()}>Request Log</button>
+      <button onClick={() => useSocketH.socketWriteLog("Hello!")}>
+        Write Log
+      </button>
     </div>
   );
 };

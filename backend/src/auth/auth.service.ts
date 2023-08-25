@@ -11,6 +11,7 @@ import {
 import { MemberRepository } from '../repository/member.repository';
 import * as Bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import * as jwt from 'jsonwebtoken';
 import {
   HOST,
   JWT_ACCESS_TOKEN_EXPIRATION_TIME,
@@ -28,7 +29,7 @@ export class AuthService {
     private readonly memberRepository: MemberRepository,
     private jwtService: JwtService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   // JWT 토큰 인증이 완료되면, 로그인 멤버정보 반환
   public async getMemberByTokenId(mbId: string) {
@@ -234,6 +235,35 @@ export class AuthService {
     } catch (e) {
       this.logger.debug(e);
       throw e;
+    }
+  }
+
+  // 유저가 Database에 존재하는지 (jwt 토큰 가드에서 필요한 유효성 검사)
+  public async validateUser(mbId: string): Promise<any> {
+    try {
+      return await this.memberRepository.findOne({
+        where: { mbId },
+      });
+    } catch (e) {
+      this.logger.debug(e);
+      throw new BadRequestException({
+        message: '유효하지 않은 토큰입니다.',
+      });
+    }
+  }
+
+  public validateUserByJwtToken(token: string): string {
+    try {
+      const payload = jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
+      if (typeof payload === 'object' && 'mbId' in payload) {
+        const mbId = payload.mbId;
+        return mbId;
+      } else {
+        this.logger.debug('mbId property does not exist in the payload.');
+        return '';
+      }
+    } catch (e) {
+      this.logger.debug(e);
     }
   }
 }
