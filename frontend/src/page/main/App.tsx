@@ -13,6 +13,7 @@ import { MainTabs } from "./App.style";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { presetTypeAtom } from "services/recoil/presetType";
+import { socketDisconnect } from "services/socket/use.socket";
 
 const App = () => {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ const App = () => {
   };
   useEffect(() => {
     if (!isLoggedIn) navigate("/auth/login");
+    return () => {
+      socketDisconnect();
+    };
   }, []);
   return (
     <section className="App" style={{ fontSize: "2rem" }}>

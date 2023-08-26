@@ -3,6 +3,7 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TodoRepository } from 'src/repository/todo.repository';
 import { ChangeListItemInfo, ListItemInfo } from 'src/interface/todo';
+import { getCurrentTimeFormatted } from 'src/lib/getCurrentTimeFormatted';
 
 @Injectable()
 export class TodoService {
@@ -13,7 +14,7 @@ export class TodoService {
 
   public async getFilteredTodoList(mbId: string) {
     try {
-      return this.todoRepository.getFilteredTodoList(mbId);
+      return await this.todoRepository.getFilteredTodoList(mbId);
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -22,7 +23,8 @@ export class TodoService {
 
   public async getCompletedTodoList(mbId: string) {
     try {
-      return this.todoRepository.getCompletedTodoList(mbId);
+      console.log(await this.todoRepository.getCompletedTodoList(mbId));
+      return await this.todoRepository.getCompletedTodoList(mbId);
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -50,6 +52,8 @@ export class TodoService {
         status: 201,
         statusText: 'Created',
         message: "프리셋이 저장되었습니다.",
+        resultData: todoPrivate,
+        createdAt: getCurrentTimeFormatted(),
       });
     } catch (e) {
       this.logger.error(e);

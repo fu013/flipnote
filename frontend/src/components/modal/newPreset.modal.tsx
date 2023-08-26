@@ -4,7 +4,7 @@ import { Button, Checkbox, ListItem, Modal, Paper } from "@mui/material";
 import { nowDate } from "lib/getNowDate";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { charActiveNameAtom } from "services/recoil/charActive";
-import { userInfoAtom } from "services/recoil/auth";
+import { accessTokenAtom, userInfoAtom } from "services/recoil/auth";
 import { presetTypeAtom } from "services/recoil/presetType";
 import {
   ListItemInfo,
@@ -19,8 +19,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { logAtom } from "services/recoil/logAtom";
 import { ListCharImage } from "components/main/presetStyle";
+import { socketSetClientLog } from "services/socket/use.socket";
 
 const StyledModal = styled(Modal)`
   position: fixed;
