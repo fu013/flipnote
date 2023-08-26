@@ -29,7 +29,7 @@ export class TodoComplete {
   @Column({ name: 'completed_date', default: () => 'CURRENT_TIMESTAMP' })
   completedDate: Date;
 
-  @CreateDateColumn({ name: 'created_date' })
+  @CreateDateColumn({ name: 'created_date', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 
   @ManyToOne(() => Character, (character) => character.todoCompletes)

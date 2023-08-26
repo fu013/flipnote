@@ -14,7 +14,7 @@ export class TodoService {
 
   public async getFilteredTodoList(mbId: string) {
     try {
-      return await this.todoRepository.getFilteredTodoList(mbId);
+      return this.todoRepository.getFilteredTodoList(mbId);
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -23,8 +23,7 @@ export class TodoService {
 
   public async getCompletedTodoList(mbId: string) {
     try {
-      console.log(await this.todoRepository.getCompletedTodoList(mbId));
-      return await this.todoRepository.getCompletedTodoList(mbId);
+      return this.todoRepository.getCompletedTodoList(mbId);
     } catch (e) {
       this.logger.error(e);
       throw e;

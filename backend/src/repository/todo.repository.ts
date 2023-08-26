@@ -60,7 +60,11 @@ export class TodoRepository extends Repository<TodoPrivate> {
       .leftJoinAndSelect(
         TodoComplete,
         'tc',
-        `tp.mbId = tc.member.mbId AND tp.chName = tc.character.chName AND tp.todoId = tc.todo_id`,
+        `
+                tp.mbId = tc.member.mbId 
+                AND tp.chName = tc.character.chName 
+                AND tp.todoId = tc.todo_id
+            `,
       )
       .where('tp.mbId = :mbId', { mbId })
       .andWhere(this.getCompletedConditions())

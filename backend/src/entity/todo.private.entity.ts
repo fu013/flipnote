@@ -27,7 +27,7 @@ export class TodoPrivate {
   @Column({ name: 'todo_type', nullable: true })
   todoType: string | null;
 
-  @CreateDateColumn({ name: 'created_date' })
+  @CreateDateColumn({ name: 'created_date', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 
   @ManyToOne(() => Member, (member) => member.todoPrivates)
