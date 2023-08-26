@@ -20,4 +20,4 @@ import { JwtModule } from '@nestjs/jwt';
     MemberRepository,
   ],
 })
-export class LogModule {}
+export class LogModule { }

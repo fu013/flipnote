@@ -14,7 +14,6 @@ import { CLIENT_PORT, CLIENT_URL } from 'src/config/config';
 import { readLogByMbId } from 'src/lib/user.log.read';
 import { writeLogByMbId } from 'src/lib/user.log.write';
 
-// Socket Config Setting
 @WebSocketGateway({
   path: '/logActive',
   cors: {
@@ -22,11 +21,6 @@ import { writeLogByMbId } from 'src/lib/user.log.write';
   },
   Credential: true,
 })
-// JWT 인증된 사용자만 로그 읽기/쓰기 가능
-// 1.
-// 1. 인증이 완료되면 연결된 소켓ID 키값에 mbid값 부여,
-// 2. 해당 mbid값이 있으면, mbid와 매핑되는 로그파일에 접근 후 읽기/쓰기 방식
-
 /**
  * 소켓 연결 handshake시 클라이언트로 부터 JWT 토큰을 같이 받음
  * 받은 토큰의 유효성을 검사하여, 성공하면 mbId, 실패하면 값을 반환하지 않음
@@ -37,89 +31,66 @@ import { writeLogByMbId } from 'src/lib/user.log.write';
 
 @WebSocketGateway(CLIENT_PORT, { transports: ['websocket'] })
 export class LogGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  constructor(private authService: AuthService) {}
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private authService: AuthService) { }
 
-  // Logger Setting
   private logger = new Logger('Gateway');
-  private connectedClients: Record<string, string> = {}; // Socket ID를 키로, mbId를 값으로 저장하는 객체
 
   afterInit() {
     this.logger.log('Socket server initialized ✅');
   }
 
-  // Socket Connection Handling
   handleConnection(@ConnectedSocket() socket: Socket) {
-    const token = Array.isArray(socket.handshake.query.token)
-      ? socket.handshake.query.token[0]
-      : socket.handshake.query.token;
-    try {
-      const mbId = this.authService.validateUserByJwtToken(token);
-      if (!mbId) {
-        socket.emit('connectionError', 'Authentication failed');
-        return;
-      }
-      this.connectedClients[socket.id] = mbId; // 연결된 클라이언트 정보 저장
-      this.logger.log(
-        `Socket ID [${socket.id}] | Member ID [${mbId}] connected successfully ⭕`,
-      );
-    } catch (e) {
-      socket.disconnect();
-    }
-  }
-
-  handleDisconnect(@ConnectedSocket() socket: Socket) {
-    const mbId = this.connectedClients[socket.id]; // 연결이 끊긴 클라이언트의 mbId 가져오기
-    delete this.connectedClients[socket.id]; // 연결 정보 삭제
-    socket.disconnect();
     this.logger.log(
-      `Socket ID [${socket.id}] | Member ID [${mbId}] disconnected ❌`,
+      `Socket ID [${socket.id}] connected successfully ⭕`,
     );
   }
 
-  // 로그 기록 요청 처리 핸들러
-  @SubscribeMessage('requestLog')
-  async handleRequestLog(@ConnectedSocket() socket: Socket) {
-    const mbId = this.connectedClients[socket.id]; // 연결된 클라이언트의 mbId 가져오기
-    if (!mbId) {
-      socket.emit('logContent', '');
-      return;
-    } else {
-      const logContent = await readLogByMbId(mbId);
-      socket.emit('logContent', logContent);
+  handleDisconnect(@ConnectedSocket() socket: Socket) {
+    socket.disconnect();
+    this.logger.log(
+      `Socket ID [${socket.id}] disconnected ❌`,
+    );
+  }
+
+  // 해당 아이디의 토큰 인증 후, 모든 로그 보내기
+  @SubscribeMessage('serverExportAllLogs')
+  async serverExportAllLogs(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() token: string,
+  ) {
+    try {
+      const mbIdWithJWT = this.authService.validateUserByJwtToken(token);
+      if (!mbIdWithJWT) {
+        // socket.emit("clientLogMessage", "Invalid token");
+        return;
+      } else {
+        const logAll = await readLogByMbId(mbIdWithJWT); // 로그 저장
+        socket.emit("logAll", logAll); // 로그 저장 결과, 클라이언트에 전송
+      }
+    } catch (error) {
+      // socket.emit("clientLogMessage", "Error occurred");
     }
   }
 
-  // 로그 기록 쓰기 처리 핸들러
-  @SubscribeMessage('writeLog')
-  async handleWriteLog(
+  // 서버 로그 메세지 저장 및 갱신
+  @SubscribeMessage('serverLogMessage')
+  async serverLogMessage(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() logMessage: string,
+    @MessageBody() body: { message: string; token: string },
   ) {
-    const mbId = this.connectedClients[socket.id]; // 연결된 클라이언트의 mbId 가져오기
-    if (!mbId) {
-      socket.emit('logContent', '');
-      return;
-    } else {
-      await writeLogByMbId(mbId, logMessage);
-      socket.emit('logWritten', `Log written: ${logMessage}`);
-    }
-  }
-
-  // 로그 커스텀 메세지 처리 핸들러
-  @SubscribeMessage('message')
-  handleMessage(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() message: string,
-  ) {
-    const mbId = this.connectedClients[socket.id]; // 연결된 클라이언트의 mbId 가져오기
-    if (!mbId) {
-      socket.emit('logContent', '');
-      return;
-    } else {
-      socket.broadcast.emit('message: ', { username: socket.id, message });
-      return { socketID: socket.id, message };
+    const { message, token } = body;
+    try {
+      const mbIdWithJWT = this.authService.validateUserByJwtToken(token);
+      if (!mbIdWithJWT) {
+        // socket.emit("clientLogMessage", "Invalid token");
+        return;
+      } else {
+        await writeLogByMbId(mbIdWithJWT, message); // 로그 저장
+        socket.emit("clientLogMessage", message); // 로그 저장 결과, 클라이언트에 전송
+      }
+    } catch (error) {
+      // socket.emit("clientLogMessage", "Error occurred");
     }
   }
 }

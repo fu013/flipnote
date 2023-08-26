@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-// 유저 로그 저장
+// 유저 로그 쓰기
 export const writeLogByMbId = async (
   mbId: string,
   logMessage: string,
