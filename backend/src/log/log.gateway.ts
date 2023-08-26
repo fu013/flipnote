@@ -22,13 +22,12 @@ import { writeLogByMbId } from 'src/lib/user.log.write';
   Credential: true,
 })
 /**
- * 소켓 연결 handshake시 클라이언트로 부터 JWT 토큰을 같이 받음
- * 받은 토큰의 유효성을 검사하여, 성공하면 mbId, 실패하면 값을 반환하지 않음
- * 소켓ID 키값에 mbid값 부여, 게이트웨이내 전역 멤버 변수로 보관함
- * 아이디값은 인증을 마친 아이디값이므로 해당 mbid값이 존재한다면,
- * 해당 id에 매핑되는 로그 파일의 읽기/쓰기 기능을 실행할 수 있게함
+ * 소켓 연결 handshake시 클라이언트와 인증 없이 연결(연결 시작부터 토큰 인증을 받으려면 구조상 굉장히 돌아가야 하므로, 채택하지 않음)
+ * 로그 GET/SET 관련 소켓 메세지가 날라오면 JWT 토큰을 인증함
+ * JWT 토큰 인증이 성공하면, 토큰에 매칭된 회원 아이디값을 추출,
+ * 해당 아이디값으로 로그 GET/SET 후 정보를 회원 소켓에게 전달
+ * JWT 토큰 인증 실패시, 오류 소켓 메세지 전달 후, disconnect
  */
-
 @WebSocketGateway(CLIENT_PORT, { transports: ['websocket'] })
 export class LogGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
