@@ -5,7 +5,6 @@ import { accessTokenAtom, isLoggedInAtom, userInfoAtom } from "services/recoil/a
 import { useAuth_h } from "services/hooks/auth.hook";
 import App from "./page/main/App";
 import Login from "page/auth/login";
-import Etc from "page/etc/etc";
 
 const Router = () => {
   const useAuthH = useAuth_h();
@@ -28,8 +27,6 @@ const Router = () => {
         {/* 정규 컴포넌트 */}
         <Route path="/" element={<App />} />
         <Route path="/auth/login" element={<Login />} />
-        {/* 개인 작업 공간 */}
-        <Route path="/etc" element={<Etc />} />
       </Routes>
     </BrowserRouter>
   );
